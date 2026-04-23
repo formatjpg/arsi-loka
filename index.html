@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARSI-LOKA: Petualangan Literasi Nusantara</title>
+    
+    <!-- Memuat alat bantu tampilan (Tailwind) dan ikon (Lucide) dari internet -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
-        /* Menggunakan font yang ramah anak, mudah dibaca, dan sedikit playful */
+        /* Mengatur jenis huruf agar terlihat ramah anak dan tebal */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
 
+        /* Kumpulan warna yang digunakan di seluruh aplikasi */
         :root {
-            /* Palet Warna Ceria & Lembut (Kids Friendly) */
             --kid-bg: #F0Fdfa; 
             --kid-primary: #0EA5E9; 
             --kid-secondary: #F59E0B; 
@@ -22,6 +25,7 @@
             --radius-btn: 9999px; 
         }
 
+        /* Pengaturan dasar seluruh halaman web */
         body {
             font-family: 'Nunito', sans-serif;
             background-color: var(--kid-bg);
@@ -30,11 +34,13 @@
             scroll-behavior: smooth;
         }
 
+        /* Gaya tulisan khusus untuk judul utama */
         .title-fun {
             font-family: 'Fredoka One', cursive;
             letter-spacing: 1px;
         }
 
+        /* Latar belakang dengan motif titik-titik samar */
         .bg-pattern {
             position: fixed; inset: 0; z-index: -3;
             background-image: radial-gradient(#bae6fd 2px, transparent 2px);
@@ -42,6 +48,7 @@
             opacity: 0.5;
         }
         
+        /* Hiasan bentuk gelembung terbang di latar belakang */
         .blob-shape-1 {
             position: fixed; top: -10%; left: -10%;
             width: 40vw; height: 40vw;
@@ -59,6 +66,7 @@
             animation: blob-float 20s ease-in-out infinite alternate-reverse;
         }
 
+        /* Gaya kotak kartu putih (seperti kotak kuis/cerita) */
         .kid-panel {
             background: #FFFFFF;
             border: 4px solid #E2E8F0; 
@@ -74,6 +82,7 @@
             border-color: #cbd5e1;
         }
 
+        /* Gaya kotak kepala di bagian atas layar menu */
         .header-panel {
             background: #FFFFFF;
             border: 4px solid var(--kid-primary);
@@ -86,6 +95,8 @@
             margin-bottom: 2rem;
         }
 
+        /* === GAYA TOMBOL === */
+        /* Tombol utama biru */
         .btn-kid {
             background-color: var(--kid-primary);
             color: #FFFFFF;
@@ -101,6 +112,7 @@
         .btn-kid:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0px #0284C7; background-color: #0284C7; border-color: #0369A1; }
         .btn-kid:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0px #0284C7; }
         
+        /* Tombol aksi oranye */
         .btn-kid-orange {
             background-color: var(--kid-secondary);
             color: #FFFFFF;
@@ -116,6 +128,7 @@
         .btn-kid-orange:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0px #D97706; background-color: #D97706; border-color: #B45309; }
         .btn-kid-orange:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0px #D97706; }
 
+        /* Tombol bergaris luar biru */
         .btn-kid-outline {
             background-color: #FFFFFF;
             color: var(--kid-primary);
@@ -131,9 +144,11 @@
         .btn-kid-outline:hover:not(:disabled) { background-color: #F0F9FF; transform: translateY(-2px); box-shadow: 0 6px 0px var(--kid-primary); }
         .btn-kid-outline:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0px var(--kid-primary); }
 
+        /* Gaya tulisan panjang pada teks cerita */
         .story-text { font-size: 1.15rem; line-height: 1.8; color: #475569; }
         .story-text p { margin-bottom: 1.5rem; text-align: justify; }
 
+        /* Efek pergerakan halus (animasi) */
         @keyframes blob-float {
             0% { transform: translateY(0) scale(1); }
             100% { transform: translateY(-20px) scale(1.05); }
@@ -142,8 +157,11 @@
         @keyframes morphIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
         
         .screen-transition { animation: morphIn 0.3s ease-out forwards; }
+        
+        /* Menyembunyikan garis gulir (scrollbar) agar terlihat bersih */
         .scroll-hidden::-webkit-scrollbar { display: none; } .scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Label penanda berwarna kuning */
         .kid-badge {
             background: #FEF08A; 
             color: #CA8A04;
@@ -159,11 +177,14 @@
 </head>
 <body class="min-h-screen pb-12 relative">
 
+    <!-- Hiasan Latar Belakang -->
     <div class="bg-pattern"></div>
     <div class="blob-shape-1"></div>
     <div class="blob-shape-2"></div>
 
+    <!-- BAGIAN 1: Kotak Menu Navigasi di Atas Layar -->
     <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-[1200px] bg-white border-4 border-slate-200 shadow-[0_4px_0px_#e2e8f0] rounded-[2rem] z-50 px-4 py-2 flex justify-between items-center transition-all">
+        <!-- Logo Aplikasi -->
         <div class="flex items-center gap-3 cursor-pointer group" onclick="showScreen('home')">
             <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center border-2 border-sky-400 group-hover:bg-sky-200 transition-colors">
                 <i data-lucide="book" class="w-6 h-6 text-sky-600"></i>
@@ -174,6 +195,7 @@
             </div>
         </div>
         
+        <!-- Pilihan Menu di Tengah (Beranda, Pustaka, Juara, Rapor) -->
         <div class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-500">
             <button onclick="showScreen('home')" class="hover:text-sky-500 transition-colors flex items-center gap-2"><div class="p-2 rounded-full bg-slate-100"><i data-lucide="home" class="w-4 h-4"></i></div> Beranda</button>
             <button onclick="showScreen('library')" class="hover:text-sky-500 transition-colors flex items-center gap-2"><div class="p-2 rounded-full bg-slate-100"><i data-lucide="library" class="w-4 h-4"></i></div> Pustaka</button>
@@ -181,6 +203,7 @@
             <button onclick="showScreen('teacher')" class="hover:text-sky-500 transition-colors flex items-center gap-2"><div class="p-2 rounded-full bg-slate-100"><i data-lucide="layout-dashboard" class="w-4 h-4"></i></div> Rapor</button>
         </div>
         
+        <!-- Informasi Pemain & Tombol Profil di Kanan -->
         <div class="flex items-center gap-3">
             <div class="flex items-center gap-3 bg-slate-50 border-2 border-slate-200 p-1 pr-4 rounded-full cursor-pointer hover:border-sky-300 hover:bg-sky-50 transition-all group" onclick="showScreen('profile')">
                 <div class="w-10 h-10 rounded-full bg-sky-200 flex items-center justify-center text-sky-700 overflow-hidden border-2 border-white shadow-sm" id="nav-avatar">
@@ -197,15 +220,16 @@
         </div>
     </nav>
 
+    <!-- Bungkus Konten Halaman yang berganti-ganti -->
     <div class="pt-32 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
 
+        <!-- LAYAR 1: Beranda Utama -->
         <div id="screen-home" class="space-y-12 screen-transition">
             <div class="text-center space-y-6 pt-8 relative max-w-4xl mx-auto">
                 <div class="kid-badge mb-2 transform -rotate-2">Ayo Mulai Petualanganmu! 🚀</div>
                 <h2 class="title-fun text-5xl md:text-6xl text-slate-800 leading-tight">Jelajahi <span class="text-sky-500">Cerita Rakyat</span><br>Nusantara</h2>
                 
                 <div class="kid-panel mt-12 p-8 md:p-12 text-center relative max-w-3xl mx-auto bg-gradient-to-b from-white to-sky-50">
-                    
                     <p class="text-base text-slate-600 font-medium leading-relaxed max-w-2xl mx-auto mb-8 text-lg">
                         Hai, Ksatria Cilik! Membaca itu seru lho! Di sini kamu bisa membaca banyak cerita hebat, menjawab kuis seru, dan menulis ulang ceritanya dengan bahasamu sendiri. 
                         <br><br>Kumpulkan <b>Skor minimal 80</b> di setiap kuis untuk menjadi Ksatria Pintar!
@@ -223,7 +247,8 @@
             </div>
         </div>
 
-      <div id="screen-leaderboard" class="hidden space-y-8 screen-transition max-w-6xl mx-auto">
+        <!-- LAYAR 2: Papan Juara -->
+        <div id="screen-leaderboard" class="hidden space-y-8 screen-transition max-w-6xl mx-auto">
             
             <div class="header-panel border-amber-400 shadow-[0_6px_0px_#FBBF24]">
                 <div class="flex items-center gap-4 w-full">
@@ -238,20 +263,22 @@
                 <button onclick="showScreen('home')" class="w-12 h-12 rounded-full border-2 border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="kid-panel p-8 rounded-[2rem] flex flex-col justify-between border-sky-200 shadow-[0_8px_0px_#bae6fd]" style="animation: slideUpFade 0.5s ease-out 0.1s forwards; opacity: 0;">
+            <!-- Daftar Peringkat -->
+            <div class="flex justify-center" id="leaderboard-grid-wrapper">
+                <div class="kid-panel w-full max-w-2xl p-8 rounded-[2rem] flex flex-col justify-between border-amber-200 shadow-[0_8px_0px_#fde68a]" style="animation: slideUpFade 0.5s ease-out forwards;">
                     <div>
                         <div class="flex justify-between items-start mb-6">
                             <div>
-                                <p class="text-sm text-sky-600 font-black uppercase tracking-wider">Juara Nasional</p>
-                                <h3 class="text-5xl font-black text-slate-800 mt-2">#<span id="rank-nat">?</span> <span class="text-xl text-slate-400 font-bold">dari <span id="total-nat">0</span></span></h3>
+                                <p class="text-sm text-amber-600 font-black uppercase tracking-wider">Juara Sekolah</p>
+                                <h3 class="text-6xl font-black text-slate-800 mt-2">#<span id="rank-sch">?</span> <span class="text-2xl text-slate-400 font-bold">dari <span id="total-sch">0</span></span></h3>
+                                <p class="text-xs font-black text-amber-700 mt-3 bg-amber-100 inline-block px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">SDN 1 Amarta</p>
                             </div>
-                            <div class="w-16 h-16 bg-sky-50 border-4 border-sky-100 rounded-full flex items-center justify-center">
-                                <i data-lucide="globe" class="w-8 h-8 text-sky-400"></i>
+                            <div class="w-20 h-20 bg-amber-50 border-4 border-amber-200 rounded-full flex items-center justify-center shadow-sm">
+                                <i data-lucide="users" class="w-10 h-10 text-amber-500"></i>
                             </div>
                         </div>
-                        
-                        <div class="mt-4 bg-sky-50 p-6 rounded-2xl border-2 border-sky-100">
+
+                        <div class="mt-8 bg-sky-50 p-6 rounded-2xl border-2 border-sky-100 mb-6">
                             <div class="flex justify-between text-sm font-black mb-3">
                                 <span class="text-sky-700">Tingkat Kehebatanmu</span>
                                 <span class="text-sky-600 bg-white px-3 py-1 rounded-full border border-sky-200 shadow-sm">Top <span id="pct-val">0</span>%</span>
@@ -259,40 +286,26 @@
                             <div class="w-full h-4 bg-white rounded-full overflow-hidden border border-sky-200">
                                 <div class="h-full bg-sky-400 transition-all duration-1000 rounded-full" style="width: 0%" id="pct-bar"></div>
                             </div>
-                            <p class="text-xs text-sky-600 mt-3 font-bold" id="pct-desc">Wow! Kamu lebih hebat dari 0% teman se-Indonesia!</p>
-                        </div>
-                    </div>
-                    <button onclick="fetchLeaderboardData()" class="btn-kid-outline w-full mt-8 py-3 flex items-center justify-center gap-2">
-                        <i data-lucide="refresh-cw" class="w-5 h-5"></i> Cek Peringkat Baru
-                    </button>
-                </div>
-
-                <div class="kid-panel p-8 rounded-[2rem] flex flex-col justify-between border-amber-200 shadow-[0_8px_0px_#fde68a]" style="animation: slideUpFade 0.5s ease-out 0.2s forwards; opacity: 0;">
-                    <div>
-                        <div class="flex justify-between items-start mb-6">
-                            <div>
-                                <p class="text-sm text-amber-600 font-black uppercase tracking-wider">Juara Sekolah</p>
-                                <h3 class="text-5xl font-black text-slate-800 mt-2">#<span id="rank-sch">?</span> <span class="text-xl text-slate-400 font-bold">dari <span id="total-sch">0</span></span></h3>
-                                <p class="text-xs font-black text-amber-700 mt-2 bg-amber-100 inline-block px-3 py-1 rounded-full border border-amber-200">SDN 1 Amarta</p>
-                            </div>
-                            <div class="w-16 h-16 bg-amber-50 border-4 border-amber-100 rounded-full flex items-center justify-center shadow-sm">
-                                <i data-lucide="users" class="w-8 h-8 text-amber-400"></i>
-                            </div>
+                            <p class="text-xs text-sky-600 mt-3 font-bold" id="pct-desc">Peringkatmu sedang dihitung...</p>
                         </div>
                         
-                        <div class="mt-4 bg-gradient-to-b from-amber-50 to-white p-6 rounded-2xl border-2 border-amber-100 flex flex-col items-center justify-center min-h-[140px]" id="school-avatar-container">
+                        <!-- Tempat Ikon Teman Teratas Ditampilkan -->
+                        <div class="bg-gradient-to-b from-amber-50 to-white p-6 rounded-2xl border-2 border-amber-100 flex flex-col items-center justify-center min-h-[140px]" id="school-avatar-container">
                             <p class="text-xs text-amber-500 font-bold mb-4">Teman-teman teratas:</p>
                         </div>
                     </div>
-                    <button class="w-full mt-8 py-4 flex items-center justify-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400 bg-slate-50 border-2 border-slate-200 rounded-[999px] cursor-not-allowed">
-                        <i data-lucide="lock" class="w-4 h-4"></i> Daftar Lengkap Terkunci
-                    </button>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                        <button onclick="fetchLeaderboardData()" class="btn-kid-outline w-full py-4 flex items-center justify-center gap-2">
+                            <i data-lucide="refresh-cw" class="w-5 h-5"></i> Cek Peringkat Baru
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- LAYAR 3: Rapor Guru -->
         <div id="screen-teacher" class="hidden space-y-8 screen-transition max-w-6xl mx-auto">
-            
             <div class="header-panel border-emerald-400 shadow-[0_6px_0px_#34D399]">
                 <div class="flex items-center gap-4 w-full">
                     <div class="w-14 h-14 bg-emerald-100 border-4 border-emerald-300 rounded-full flex items-center justify-center shrink-0">
@@ -324,14 +337,14 @@
                         </tr>
                     </thead>
                     <tbody class="text-sm font-bold text-slate-700" id="teacher-table-body">
+                        <!-- Data Tabel Guru Diisikan Secara Otomatis -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-
+        <!-- LAYAR 4: Pustaka (Katalog Cerita) -->
         <div id="screen-library" class="hidden space-y-6 screen-transition">
-            
             <div class="header-panel border-sky-400 shadow-[0_6px_0px_#38BDF8]">
                 <div class="flex items-center gap-4 w-full">
                     <div class="w-14 h-14 bg-sky-100 border-4 border-sky-300 rounded-full flex items-center justify-center shrink-0">
@@ -345,14 +358,17 @@
                 <button onclick="showScreen('home')" class="w-12 h-12 rounded-full border-2 border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
             
-            <div id="library-tabs" class="flex flex-wrap justify-center gap-3 mt-4 mb-6">
-            </div>
+            <!-- Tombol Pemilah Wilayah Pulau -->
+            <div id="library-tabs" class="flex flex-wrap justify-center gap-3 mt-4 mb-6"></div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2" id="library-grid">
-            </div>
+            <!-- Daftar Kartu Cerita -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2" id="library-grid"></div>
         </div>
 
+        <!-- LAYAR 5: Membaca Cerita & Misi Kuis -->
         <div id="screen-reader" class="hidden space-y-6 screen-transition max-w-4xl mx-auto">
+            
+            <!-- Judul Cerita Saat Dibaca -->
             <div class="bg-white border-4 border-slate-200 rounded-[2rem] p-4 flex justify-between items-center z-20 sticky top-24 shadow-sm mb-6">
                 <button onclick="closeReader()" class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-sky-500 transition-colors bg-slate-50 px-4 py-2 rounded-full border-2 border-transparent hover:border-sky-200">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i> Tutup Buku
@@ -367,9 +383,10 @@
                 <div class="w-24"></div> 
             </div>
 
-            <div class="kid-panel overflow-hidden relative h-64 md:h-80 w-full group p-0 rounded-[2rem] border-slate-200 shadow-[0_8px_0px_#e2e8f0]" id="reader-illustration">
-            </div>
+            <!-- Gambar Pemanis Cerita -->
+            <div class="kid-panel overflow-hidden relative h-64 md:h-80 w-full group p-0 rounded-[2rem] border-slate-200 shadow-[0_8px_0px_#e2e8f0]" id="reader-illustration"></div>
 
+            <!-- Pemutar Suara Cerita (Audio) -->
             <div class="bg-sky-500 rounded-full p-3 flex items-center gap-4 shadow-[0_6px_0px_#0284c7] border-4 border-sky-600 mt-6">
                 <button id="btn-toggle-audio" onclick="toggleStoryAudio()" class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-sky-500 hover:bg-sky-50 transition-colors border-2 border-sky-200 shadow-sm shrink-0">
                     <i id="audio-icon" data-lucide="play" class="w-6 h-6 ml-1"></i>
@@ -385,16 +402,17 @@
                 </div>
             </div>
 
+            <!-- Isi Teks Cerita Panjang -->
             <div class="kid-panel p-8 md:p-12 mt-6 border-slate-200 shadow-[0_8px_0px_#e2e8f0]">
-                <div id="reader-content" class="story-text text-lg">
-                </div>
+                <div id="reader-content" class="story-text text-lg"></div>
                 
                 <div class="mt-12 pt-10 border-t-4 border-dashed border-slate-200 flex flex-col gap-6" id="reader-actions">
                     <div class="text-center mb-2">
                         <h4 class="title-fun text-3xl text-slate-800">Misi Ksatria! ⚔️</h4>
-                        <p class="text-sm text-slate-500 font-bold mt-2">Buktikan kalau kamu sudah paham ceritanya dengan kuis ini.</p>
+                        <p class="text-sm text-slate-500 font-bold mt-2">Buktikan kalau kamu sudah paham ceritanya dengan misi ini.</p>
                     </div>
                     
+                    <!-- Kotak Eksekusi Kuis -->
                     <div class="bg-indigo-50 border-4 border-indigo-100 p-8 rounded-[2rem] flex flex-col justify-between hover:border-indigo-300 transition-colors mx-auto max-w-lg w-full text-center mb-4">
                         <div class="flex flex-col items-center">
                             <div class="w-16 h-16 bg-indigo-200 text-indigo-600 rounded-full flex items-center justify-center mb-4 border-4 border-white shadow-sm"><i data-lucide="brain" class="w-8 h-8"></i></div>
@@ -407,13 +425,14 @@
                         <p id="quiz-status-text" class="text-center text-[11px] font-black mt-4 text-indigo-500 uppercase hidden"></p>
                     </div>
 
+                    <!-- Kotak Tantangan Menulis -->
                     <div class="bg-amber-50 border-4 border-amber-200 p-6 md:p-8 rounded-[2rem] mt-4 relative overflow-hidden">
                         <div class="flex items-center gap-4 mb-4">
                             <div class="w-12 h-12 bg-amber-200 text-amber-600 rounded-full flex items-center justify-center border-2 border-white shadow-sm"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
                             <h5 class="text-xl font-black text-amber-900">Tantangan Menulis</h5>
                         </div>
                         <p class="text-sm text-amber-700 mb-6 font-medium">
-                            Sekarang giliranmu! Ceritakan ulang kisah yang baru kamu baca menggunakan bahasamu sendiri. Eyang Semar (Sistem) akan mengecek kata kuncinya!
+                            Sekarang giliranmu! Ceritakan ulang kisah yang baru kamu baca menggunakan bahasamu sendiri. Eyang Semar (Sistem) akan mengeceknya!
                         </p>
                         <textarea id="writing-input" rows="5" class="w-full bg-white border-2 border-amber-200 rounded-2xl p-5 text-base focus:outline-none focus:border-amber-400 resize-none font-medium text-slate-700 shadow-inner" placeholder="Pada suatu hari..."></textarea>
                         
@@ -423,13 +442,13 @@
                             <i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai
                         </button>
                     </div>
-                    </div>
                 </div>
             </div>
         </div>
 
     </div>
 
+    <!-- SEMBULAN (MODAL) PROFIL PEMAIN -->
     <div id="screen-profile" class="hidden fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white border-4 border-slate-200 w-full max-w-2xl p-8 relative transform transition-transform duration-300 scale-95 flex flex-col max-h-[90vh] overflow-y-auto rounded-[2rem] shadow-2xl" id="profile-content">
             
@@ -440,7 +459,6 @@
             </div>
             
             <div class="w-full pt-4 pb-2">
-                
                 <div class="flex flex-col md:flex-row gap-6 items-center justify-center mb-8 bg-sky-50 p-6 border-4 border-sky-100 rounded-[2rem] relative overflow-hidden">
                     <div id="prof-avatar-main" class="w-32 h-32 md:w-36 md:h-36 bg-white rounded-full border-4 border-sky-300 flex items-center justify-center p-4 relative z-10 shrink-0 shadow-sm mx-auto md:mx-0"></div>
                     
@@ -465,11 +483,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="h-1 flex-grow bg-slate-100 rounded-full"></div>
-                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Pilih Gambar Profilmu</p>
-                    <div class="h-1 flex-grow bg-slate-100 rounded-full"></div>
-                </div>
+                <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest text-center mb-4">Pilih Avatar Ikon</p>
                 <div id="prof-char-list" class="flex flex-wrap justify-center gap-3 max-h-32 overflow-y-auto scroll-hidden p-4 bg-white border-2 border-slate-100 rounded-2xl shadow-inner"></div>
 
                 <button onclick="saveUserProfile()" class="btn-kid w-full mt-8 py-4 text-base flex justify-center items-center gap-2">
@@ -479,6 +493,7 @@
         </div>
     </div>
 
+    <!-- SEMBULAN (MODAL) SAAT KUIS BERLANGSUNG -->
     <div id="screen-quiz" class="hidden fixed inset-0 z-[150] bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-500">
         <div class="bg-white w-full max-w-3xl p-8 md:p-12 text-center relative transform transition-transform duration-300 scale-95 flex flex-col max-h-[90vh] rounded-[2rem] overflow-y-auto scroll-hidden border-4 border-indigo-200 shadow-2xl" id="quiz-content">
             
@@ -500,52 +515,58 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- BAGIAN KODE LOGIKA JAVASCRIPT -->
+    <!-- ========================================== -->
     <script>
+        // Alias pendek untuk memanggil elemen HTML berdasarkan ID (agar kode tidak panjang)
+        const $ = (id) => document.getElementById(id);
+
         // ==========================================
-        //  EFEK SUARA & MUSIK LATAR (BGM)
+        // EFEK SUARA & MUSIK LATAR (BGM)
         // ==========================================
-        // BGM Ceria (Aman dari pemblokiran CORS)
+        // BGM Ceria dipasang dengan volume sangat kecil (5%) agar fokus membaca tidak terganggu
         const bgm = new Audio('./bgm_joyfull.mp3'); 
         bgm.loop = true; 
-        bgm.volume = 0.05; // 5% Sangat pelan agar tidak mengganggu afokus baca
+        bgm.volume = 0.05; 
         
-        // Efek Suara Ceria
+        // Memuat efek suara klik, jawaban benar, dan jawaban salah
         const soundClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); 
         soundClick.volume = 0.2;
-        
         const soundCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3'); 
         soundCorrect.volume = 0.4;
-        
         const soundWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3'); 
         soundWrong.volume = 0.3;
         
         let isBgmPlaying = false;
         
+        // Menjalankan musik latar secara otomatis saat layar disentuh/diklik pertama kali
         document.addEventListener('click', function(event) {
             if (!isBgmPlaying) {
                 bgm.play().catch(err => console.log("Menunggu interaksi pengguna..."));
                 isBgmPlaying = true;
             }
-
+            // Jika yang diklik adalah sebuah tombol, mainkan efek suara klik
             const clickableElement = event.target.closest('button, .cursor-pointer, [onclick]');
             if (clickableElement) {
                 soundClick.currentTime = 0; 
                 soundClick.play().catch(err => {});
             }
         });
-        // ======================================
 
         // ==========================================
-        //  DATABASE INTEGRATION (GOOGLE SHEETS)
+        // PENGATURAN INTEGRASI DATABASE (GOOGLE SHEETS)
         // ==========================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwudlU29ENzbWGAj0ibAG9TEHdYHRrNTtAFMhU9P-aLlbLNpumekVfIu9BKke4zXdk0/exec"; 
 
+        // Fungsi untuk mengambil daftar nilai teman-teman dari Google Sheets
         async function fetchLeaderboardData() {
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
                 if (!response.ok) throw new Error('Gagal mengambil data.');
                 const data = await response.json();
                 
+                // Menyamakan format data yang datang agar rapi
                 const normalizedData = data.map(item => ({
                     nama: item.Nama || item.nama || "",
                     sekolah: item.Sekolah || item.sekolah || "SDN 1 Amarta",
@@ -556,6 +577,7 @@
                     avgTime: parseInt(item.AvgTime || item.avgTime || item.avgtime || 0)
                 }));
 
+                // Memasukkan juga nilai pemain yang sedang aktif ke dalam daftar
                 const userIndex = normalizedData.findIndex(s => s.nama === user.name);
                 let totalScore = 0, totalCount = 0;
                 Object.values(user.completedStories).forEach(st => { totalScore += st.score; totalCount++; });
@@ -584,6 +606,39 @@
             }
         }
 
+        // Fungsi untuk mengirim data nilai pemain ke buku catatan guru (Google Sheets) melalui internet
+        async function syncDataToSheet() {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "") return;
+
+            let totalScore = 0, totalCount = 0;
+            Object.values(user.completedStories).forEach(st => { totalScore += st.score; totalCount++; });
+            const avgScore = totalCount > 0 ? Math.round(totalScore / totalCount) : 0;
+            const avgTime = user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / user.readTimes.length / 60) : 0;
+
+            const payload = {
+                oldName: user.originalName, 
+                nama: user.name,
+                sekolah: "SDN 1 Amarta", 
+                level: user.level,
+                exp: user.exp,
+                avgScore: avgScore,
+                readStories: user.readStories, 
+                avgTime: avgTime
+            };
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.error("Gagal sinkron:", e);
+            }
+        }
+
+        // Fungsi untuk menampilkan papan juara berdasarkan skor
         async function updateLeaderboardUI() {
             const data = await fetchLeaderboardData();
             if (data.length === 0) return; 
@@ -593,16 +648,16 @@
             const userSchoolRank = schoolRank.findIndex(s => s.nama === user.name) + 1;
             const totalSchool = schoolRank.length;
             
-            // Menghitung persentil di tingkat sekolah
+            // Menghitung persentase kehebatan (peringkat)
             let percentile = 0;
             if (userSchoolRank > 0 && totalSchool > 1) {
                percentile = Math.round(((totalSchool - userSchoolRank) / totalSchool) * 100);
             }
 
-            // Ganti struktur HTML di Layar Papan Peringkat HANYA DENGAN SATU KARTU SEKOLAH YANG DI TENGAH
+            // Ganti isi tulisan pada kotak Papan Peringkat
             const leaderboardContainer = document.querySelector('#screen-leaderboard .grid');
             if (leaderboardContainer) {
-                leaderboardContainer.className = "flex justify-center"; // Mengubah dari grid menjadi flex center
+                leaderboardContainer.className = "flex justify-center"; 
                 
                 leaderboardContainer.innerHTML = `
                     <div class="kid-panel w-full max-w-2xl p-8 rounded-[2rem] flex flex-col justify-between border-amber-200 shadow-[0_8px_0px_#fde68a]" style="animation: slideUpFade 0.5s ease-out forwards;">
@@ -635,7 +690,7 @@
                         </div>
                         
                         <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                            <button onclick="fetchLeaderboardData()" class="btn-kid-outline w-full py-4 flex items-center justify-center gap-2">
+                            <button onclick="updateLeaderboardUI()" class="btn-kid-outline w-full py-4 flex items-center justify-center gap-2">
                                 <i data-lucide="refresh-cw" class="w-5 h-5"></i> Cek Peringkat Baru
                             </button>
                         </div>
@@ -643,8 +698,8 @@
                 `;
             }
             
-            // Menyuntikkan Avatar Teman
-            const avatarContainer = document.getElementById('school-avatar-container');
+            // Memunculkan gambar teman yang memiliki peringkat paling atas
+            const avatarContainer = $('school-avatar-container');
             if (avatarContainer) {
                 let avatarHtml = '<p class="text-xs text-amber-500 font-bold mb-4">Teman-teman teratas:</p><div class="flex -space-x-3">';
                 for(let i=0; i<Math.min(3, schoolRank.length); i++){
@@ -665,47 +720,13 @@
             lucide.createIcons();
         }
 
-        async function syncDataToSheet() {
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "") return;
-
-            let totalScore = 0, totalCount = 0;
-            Object.values(user.completedStories).forEach(st => { totalScore += st.score; totalCount++; });
-            const avgScore = totalCount > 0 ? Math.round(totalScore / totalCount) : 0;
-            const avgTime = user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / user.readTimes.length / 60) : 0;
-
-            const payload = {
-                oldName: user.originalName, 
-                nama: user.name,
-                sekolah: "SDN 1 Amarta", 
-                level: user.level,
-                exp: user.exp,
-                avgScore: avgScore,
-                readStories: user.readStories, 
-                avgTime: avgTime
-            };
-
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                console.log("Data sinkron dengan server.");
-            } catch (e) {
-                console.error("Gagal sinkron:", e);
-            }
-        }
-
-
-
+        // Fungsi untuk mengambil data agar guru bisa melihat rapor seluruh siswa
         async function renderTeacherTableFull() {
-            const tbody = document.getElementById('teacher-table-body');
+            const tbody = $('teacher-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Membuka buku catatan...</td></tr>';
             lucide.createIcons();
 
             const data = await fetchLeaderboardData();
-            
             const schoolData = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a,b) => b.avgScore - a.avgScore);
 
             if (schoolData.length === 0) {
@@ -742,21 +763,10 @@
         }
 
         // ==========================================
-        // LOGIKA UI CERITA & KUIS
+        // KOLEKSI CERITA RAKYAT DAN PERTANYAAN KUIS
         // ==========================================
-
-        const wayangSVGs = {
-            'yudhistira': '<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#FEF3C7" stroke="#F59E0B" stroke-width="4"/><path d="M 50 20 C 70 35 70 65 50 80 C 30 65 30 35 50 20 Z" fill="#FCD34D" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/><circle cx="50" cy="45" r="8" fill="#F59E0B"/><path d="M 40 65 L 60 65 M 45 75 L 55 75" stroke="#F59E0B" stroke-width="3" stroke-linecap="round"/></svg>', 
-            'bima': '<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#FEE2E2" stroke="#EF4444" stroke-width="4"/><polygon points="50,15 85,50 50,85 15,50" fill="#FECACA" stroke="#EF4444" stroke-width="3" stroke-linejoin="round"/><circle cx="35" cy="45" r="6" fill="#EF4444"/><circle cx="65" cy="45" r="6" fill="#EF4444"/><path d="M 40 65 H 60" stroke="#EF4444" stroke-width="4" stroke-linecap="round"/></svg>', 
-            'arjuna': '<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#E0F2FE" stroke="#0EA5E9" stroke-width="4"/><path d="M 50 15 L 80 45 L 50 85 L 20 45 Z" fill="#BAE6FD" stroke="#0EA5E9" stroke-width="3" stroke-linejoin="round"/><circle cx="40" cy="45" r="5" fill="#0EA5E9"/><circle cx="60" cy="45" r="5" fill="#0EA5E9"/><path d="M 45 65 Q 50 70 55 65" stroke="#0EA5E9" stroke-width="4" fill="none" stroke-linecap="round"/></svg>'
-        };
-
-        const characters = {
-            'arjuna': { id:'arjuna', name: 'Jagoan Biru' },
-            'bima': { id:'bima', name: 'Jagoan Merah' },
-            'yudhistira': { id:'yudhistira', name: 'Jagoan Kuning' }
-        };
-
+        
+        // Aturan tampilan warna dan ikon untuk masing-masing cerita
         const getStoryIconStyle = (storyId) => {
             const styles = {
                 'j1': { icon: 'leaf', color: 'from-emerald-300 to-emerald-500 text-emerald-100' }, 
@@ -789,7 +799,7 @@
                 { q: "Pesan moral apa yang ditekankan dalam cerita ini terkait ucapan kita?", a: ["Harus kaya", "Janji harus dipikirkan dengan bijak sebelum diucapkan", "Jangan menanam mentimun", "Selalu menuruti raksasa"], c: 1, exp: "Keputusan Mbok Srini di awal membawa kesulitan, mengajarkan kita berhati-hati membuat janji." }
               ]
             },
-            { id: 'j2', region: 'Jawa', diff: 'Sedang', title: 'Sangkuriang (Jawa Barat)', audioUrl: '', desc: 'Kisah anak yang diusir dan kembali dengan niat mustahil.', content: `Pada zaman dahulu di daerah Jawa Barat, hiduplah seorang putri cantik bernama Dayang Sumbi yang memiliki seorang anak laki-laki bernama Sangkuriang. Mereka hidup sederhana ditemani seekor anjing setia bernama Tumang, yang sebenarnya adalah ayah Sangkuriang yang dikutuk. Suatu hari, Dayang Sumbi menyuruh Sangkuriang berburu rusa, namun karena tidak menemukan buruannya, Sangkuriang justru membunuh Tumang dan membawa hatinya pulang. Mengetahui hal itu, Dayang Sumbi sangat marah, lalu memukul Sangkuriang dan mengusirnya dari rumah. Sangkuriang pun pergi mengembara hingga bertahun-tahun lamanya.<br><br>Setelah dewasa, Sangkuriang kembali ke kampung halamannya tanpa menyadari bahwa ঐতি bertemu dengan ibunya sendiri. Karena kecantikan Dayang Sumbi yang tetap awet muda, Sangkuriang jatuh cinta dan ingin menikahinya. Dayang Sumbi akhirnya menyadari bahwa pemuda itu adalah anaknya dari bekas luka di kepala. Untuk menggagalkan niat tersebut, ia mengajukan syarat yang mustahil, yaitu Sangkuriang harus membuat danau dan sebuah perahu besar dalam satu malam. Dengan bantuan makhluk gaib, Sangkuriang hampir berhasil menyelesaikan tugasnya.<br><br>Melihat hal itu, Dayang Sumbi berusaha menggagalkannya dengan membuat suasana seolah-olah hari sudah pagi. Ia menebarkan kain putih dan menyalakan api hingga ayam-ayam berkokok. Sangkuriang merasa gagal dan sangat marah. Ia kemudian menendang perahu yang telah dibuatnya hingga terbalik, yang kemudian dipercaya menjadi Gunung Tangkuban Perahu. Sejak saat itu, Sangkuriang menghilang, dan Dayang Sumbi hidup dalam penyesalan.<br><br>Cerita ini mengajarkan kita untuk mengendalikan emosi, berpikir sebelum bertindak, dan selalu menghormati orang tua.`, 
+            { id: 'j2', region: 'Jawa', diff: 'Sedang', title: 'Sangkuriang (Jawa Barat)', audioUrl: '', desc: 'Kisah anak yang diusir dan kembali dengan niat mustahil.', content: `Pada zaman dahulu di daerah Jawa Barat, hiduplah seorang putri cantik bernama Dayang Sumbi yang memiliki seorang anak laki-laki bernama Sangkuriang. Mereka hidup sederhana ditemani seekor anjing setia bernama Tumang, yang sebenarnya adalah ayah Sangkuriang yang dikutuk. Suatu hari, Dayang Sumbi menyuruh Sangkuriang berburu rusa, namun karena tidak menemukan buruannya, Sangkuriang justru membunuh Tumang dan membawa hatinya pulang. Mengetahui hal itu, Dayang Sumbi sangat marah, lalu memukul Sangkuriang dan mengusirnya dari rumah. Sangkuriang pun pergi mengembara hingga bertahun-tahun lamanya.<br><br>Setelah dewasa, Sangkuriang kembali ke kampung halamannya tanpa menyadari bahwa ia bertemu dengan ibunya sendiri. Karena kecantikan Dayang Sumbi yang tetap awet muda, Sangkuriang jatuh cinta dan ingin menikahinya. Dayang Sumbi akhirnya menyadari bahwa pemuda itu adalah anaknya dari bekas luka di kepala. Untuk menggagalkan niat tersebut, ia mengajukan syarat yang mustahil, yaitu Sangkuriang harus membuat danau dan sebuah perahu besar dalam satu malam. Dengan bantuan makhluk gaib, Sangkuriang hampir berhasil menyelesaikan tugasnya.<br><br>Melihat hal itu, Dayang Sumbi berusaha menggagalkannya dengan membuat suasana seolah-olah hari sudah pagi. Ia menebarkan kain putih dan menyalakan api hingga ayam-ayam berkokok. Sangkuriang merasa gagal dan sangat marah. Ia kemudian menendang perahu yang telah dibuatnya hingga terbalik, yang kemudian dipercaya menjadi Gunung Tangkuban Perahu. Sejak saat itu, Sangkuriang menghilang, dan Dayang Sumbi hidup dalam penyesalan.<br><br>Cerita ini mengajarkan kita untuk mengendalikan emosi, berpikir sebelum bertindak, dan selalu menghormati orang tua.`, 
               questions: [
                 { q: "Siapakah Tumang dalam kisah Sangkuriang?", a: ["Anjing pemburu biasa", "Siluman harimau", "Ayah Sangkuriang yang dikutuk", "Kawan lama Sangkuriang"], c: 2, exp: "Teks menjelaskan Tumang sebenarnya adalah ayah Sangkuriang yang dikutuk menjadi anjing." },
                 { q: "Mengapa Dayang Sumbi mengusir Sangkuriang dari rumah?", a: ["Karena ia malas berburu", "Karena membunuh Tumang dan membawa hatinya pulang", "Karena memecahkan perahu", "Karena tidak menuruti perintah"], c: 1, exp: "Dayang Sumbi sangat marah mengetahui Sangkuriang membunuh anjing setianya." },
@@ -925,6 +935,7 @@
             }
         ];
 
+        // Data awal pemain saat aplikasi baru dibuka
         let user = { 
             originalName: "Satria Amarta",
             name: "Satria Amarta", 
@@ -939,91 +950,83 @@
             completedStories: {} 
         };
 
-        
-
+        // Batas nilai pengalaman (EXP) untuk naik ke level berikutnya
         const levelThresholds = [0, 100, 250, 450, 700, 1000, 1350, 1750, 2200];
         
+        // Data sementara saat aplikasi sedang berjalan
         let currentStoryId = null;
         let currentLibraryFilter = 'Semua';
         let quizState = { active: false, questions: [], currentIndex: 0, score: 0, isRemedial: false, isTransitioning: false };
         let readingTimerInterval;
         let readingSeconds = 0;
+        
         // ===== VARIABEL AUDIO CERITA =====
         let storyAudio = new Audio();
         let isStoryPlaying = false;
         
-        // Memaksa browser merender durasi lebih cepat
+        // Memaksa peramban (browser) untuk mengenali panjang lagu dengan cepat
         storyAudio.preload = 'metadata';
 
-        // Ketika waktu audio berjalan, update teks detik dan panjang bar kuning
+        // Ketika waktu audio berjalan, ubah teks durasi menit/detik dan panjang bilah (bar) pemutar suara
         storyAudio.addEventListener('timeupdate', () => {
-            const timerText = document.getElementById('audio-timer');
-            const progressFill = document.getElementById('audio-progress-fill');
+            const timerText = $('audio-timer');
+            const progressFill = $('audio-progress-fill');
             
             if (storyAudio.duration) {
-                // Kalkulasi Menit dan Detik berjalan
                 const currentMin = String(Math.floor(storyAudio.currentTime / 60)).padStart(2, '0');
                 const currentSec = String(Math.floor(storyAudio.currentTime % 60)).padStart(2, '0');
-                
-                // Kalkulasi Menit dan Detik total durasi
                 const totalMin = String(Math.floor(storyAudio.duration / 60)).padStart(2, '0');
                 const totalSec = String(Math.floor(storyAudio.duration % 60)).padStart(2, '0');
                 
-                timerText.innerText = `${currentMin}:${currentSec} / ${totalMin}:${totalSec}`;
+                if (timerText) timerText.innerText = `${currentMin}:${currentSec} / ${totalMin}:${totalSec}`;
                 
-                // Hitung persentase panjang bar kuning
                 const percent = (storyAudio.currentTime / storyAudio.duration) * 100;
-                progressFill.style.width = `${percent}%`;
+                if (progressFill) progressFill.style.width = `${percent}%`;
             }
         });
 
-        // Ketika audio selesai berputar (tamat)
+        // Mematikan tanda pemutar suara jika lagu/narasi sudah selesai
         storyAudio.addEventListener('ended', () => {
             isStoryPlaying = false;
             updatePlayIcon();
         });
 
-        // Fungsi Play / Pause
+        // Fungsi menyalakan atau memberhentikan (pause) narasi suara
         function toggleStoryAudio() {
-            // Jika cerita tidak punya audioUrl, hentikan
             if (!storyAudio.src || storyAudio.src.endsWith('null') || storyAudio.src === window.location.href) return;
 
             if (isStoryPlaying) {
                 storyAudio.pause();
                 isStoryPlaying = false;
-                
-                // Mengembalikan volume BGM ke normal (misal 0.05 / 5%) ketika narasi di-pause
                 bgm.volume = 0.05; 
             } else {
                 storyAudio.play();
                 isStoryPlaying = true;
-                
-                // Meredupkan BGM (Audio Ducking) menjadi 0.01 (1%) saat narasi berjalan
-                bgm.volume = 0.01; 
+                bgm.volume = 0.01; // Meredupkan suara lagu latar agar suara cerita terdengar jelas
             }
             updatePlayIcon();
         }
 
-        // Fungsi agar bilah audio bisa diklik (Seek bar)
+        // Fungsi untuk melompat ke menit tertentu pada pemutar suara jika bilah diklik
         function seekStoryAudio(event) {
             if (!storyAudio.duration) return;
             
-            const track = document.getElementById('audio-progress-track');
+            const track = $('audio-progress-track');
             const rect = track.getBoundingClientRect();
-            // Hitung di mana klik terjadi (dari 0 sampai lebar track)
             const clickPosition = event.clientX - rect.left;
             const percentClicked = clickPosition / rect.width;
             
-            // Pindahkan waktu putar (currentTime) ke persentase tersebut
             storyAudio.currentTime = percentClicked * storyAudio.duration;
         }
 
-        // Mengubah Ikon Play (Segitiga) menjadi Pause (Garis Dua) dan sebaliknya
+        // Fungsi mengganti gambar ikon "Mainkan" menjadi "Jeda"
         function updatePlayIcon() {
-            const iconContainer = document.getElementById('audio-icon');
+            const iconContainer = $('audio-icon');
+            if (!iconContainer) return;
+
             if (isStoryPlaying) {
                 iconContainer.setAttribute('data-lucide', 'pause');
-                iconContainer.classList.remove('ml-1'); // Hapus margin agar ikon pause presisi di tengah
+                iconContainer.classList.remove('ml-1'); 
             } else {
                 iconContainer.setAttribute('data-lucide', 'play');
                 iconContainer.classList.add('ml-1'); 
@@ -1031,34 +1034,25 @@
             lucide.createIcons();
         }
 
+        // Fungsi menyimpan data profil (nama pemain) yang baru diketik
         function saveUserProfile() {
-            const inputUsername = document.getElementById('input-username');
+            const inputUsername = $('input-username');
             if(inputUsername) {
                 user.name = inputUsername.value;
             }
             
-            // 1. Tampilkan pesan sukses
             showToast("Identitas Berhasil Disimpan!", "success");
-            
-            // 2. Tutup jendela modal profil
             closeModal('screen-profile');
-            
-            // 3. Perbarui tampilan Nama dan Level di Navbar (bagian atas)
             updateNav();
-            
-            // 4. Kirim data terbaru ke Google Sheets (Database)
             syncDataToSheet();
-            
-            // 5. Update nama asli di memori agar sistem pencarian baris di script tidak bingung
             user.originalName = user.name; 
             
-            // 6. SOLUSI MASALAH NO. 4: Pindah ke layar beranda secara otomatis
-            // Kita beri sedikit jeda (300ms) agar animasi modal tertutup selesai dulu
             setTimeout(() => {
                 showScreen('home');
             }, 300);
         }
 
+        // Fungsi untuk melihat berapa banyak cerita dari tingkat tertentu (mudah/sedang/sulit) yang sudah diselesaikan
         function getTierStats(diffLevel) {
             let storiesInTier = libraryData.filter(s => s.diff === diffLevel).map(s => s.id);
             let completedInTier = storiesInTier.filter(id => user.completedStories[id] !== undefined);
@@ -1077,6 +1071,7 @@
             };
         }
 
+        // Fungsi untuk menghitung level pemain berdasarkan jumlah EXP yang dimiliki
         function calculateLevel() {
             let newLevel = 1;
             for(let i = 0; i < levelThresholds.length; i++) {
@@ -1092,11 +1087,12 @@
             updateNav();
         }
 
+        // Fungsi untuk memperbarui tulisan nama dan exp di menu atas (navigasi)
         function updateNav() {
-            const elName = document.getElementById('nav-name');
-            const elPts = document.getElementById('nav-pts');
-            const elLevelTitle = document.getElementById('nav-level-title');
-            const elAvatar = document.getElementById('nav-avatar');
+            const elName = $('nav-name');
+            const elPts = $('nav-pts');
+            const elLevelTitle = $('nav-level-title');
+            const elAvatar = $('nav-avatar');
             
             if(elName) elName.innerText = user.name;
             if(elPts) elPts.innerText = user.exp + " EXP";
@@ -1110,15 +1106,18 @@
             lucide.createIcons();
         }
 
+        // Fungsi untuk menggambar halaman Pustaka Buku (Daftar Cerita)
         function renderLibrary(filterRegion = currentLibraryFilter) {
             currentLibraryFilter = filterRegion;
-            const grid = document.getElementById('library-grid');
-            const tabsContainer = document.getElementById('library-tabs');
+            const grid = $('library-grid');
+            const tabsContainer = $('library-tabs');
             
             const statsMudah = getTierStats('Mudah');
             const statsSedang = getTierStats('Sedang');
             
             const regions = ['Semua', 'Jawa', 'Sumatra', 'Sulawesi', 'Kalimantan', 'Papua'];
+            
+            // Menampilkan tombol-tombol penyaring wilayah (Pulau)
             tabsContainer.innerHTML = regions.map(reg => {
                 const isActive = reg === currentLibraryFilter;
                 const baseClass = "px-5 py-2.5 rounded-full font-bold text-xs cursor-pointer transition-all border-2";
@@ -1133,11 +1132,14 @@
                 ? libraryData 
                 : libraryData.filter(s => s.region.toLowerCase() === filterRegion.toLowerCase());
 
+            // Menggambar kartu cerita satu per satu
             html += filteredStories.map((story, idx) => {
                 const delay = ((idx + 1) * 0.1);
                 
                 let isLocked = false;
                 let lockMsg = "";
+                
+                // Mencegah anak membuka level sulit sebelum menyelesaikan level mudah
                 if(story.diff === 'Sedang' && !statsMudah.isCleared) {
                     isLocked = true; lockMsg = "Selesaikan 5 Cerita Mudah dulu ya!";
                 }
@@ -1150,7 +1152,6 @@
 
                 const isCleared = user.completedStories[story.id] && user.completedStories[story.id].score >= 80;
                 
-                // MENGGESER LOGO BINTANG KE DALAM AGAR TIDAK TERPOTONG KARTU
                 const checkmarkHtml = isCleared ? `
                 <div class="absolute top-4 right-4 z-30 drop-shadow-md transform rotate-12 animate-in zoom-in">
                     <div class="bg-amber-400 border-4 border-white text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
@@ -1186,6 +1187,7 @@
             lucide.createIcons();
         }
 
+        // Fungsi ketika buku cerita diklik dan halaman membaca terbuka
         function openStory(id) {
             const story = libraryData.find(s => s.id === id);
             if(!story) return;
@@ -1193,33 +1195,35 @@
             currentStoryId = id;
             const styleData = getStoryIconStyle(id);
 
-            document.getElementById('reader-title').innerText = story.title;
-            document.getElementById('reader-region').innerText = "Pulau " + story.region;
-            document.getElementById('reader-diff').innerText = `Tingkat ${story.diff}`;
-            document.getElementById('reader-content').innerHTML = `<p>${story.content}</p>`;
+            $('reader-title').innerText = story.title;
+            $('reader-region').innerText = "Pulau " + story.region;
+            $('reader-diff').innerText = `Tingkat ${story.diff}`;
+            $('reader-content').innerHTML = `<p>${story.content}</p>`;
             
-            // ... (KODE DI DALAM openStory) ...
-            document.getElementById('reader-illustration').innerHTML = `
+            $('reader-illustration').innerHTML = `
                 <div class="absolute inset-0 bg-gradient-to-br ${styleData.color} flex items-center justify-center">
                     <i data-lucide="${styleData.icon}" class="w-32 h-32 opacity-80"></i>
                 </div>
             `;
 
-            // === TAMBAHKAN/KEMBALIKAN RESETTER MENULIS DI SINI ===
-            document.getElementById('writing-input').value = '';
-            document.getElementById('writing-input').style.display = 'block';
+            // Reset Kotak Tantangan Menulis
+            $('writing-input').value = '';
+            $('writing-input').style.display = 'block';
             
-            const btnSubmit = document.getElementById('btn-submit-writing');
-            btnSubmit.style.display = 'flex';
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai';
+            const btnSubmit = $('btn-submit-writing');
+            if (btnSubmit) {
+                btnSubmit.style.display = 'flex';
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai';
+            }
             
-            document.getElementById('writing-result').innerHTML = '';
-            // =======================================================
+            if ($('writing-result')) {
+                $('writing-result').innerHTML = '';
+            }
             
-            // Logika Kuis (sudah ada)
-            const btnQuiz = document.getElementById('btn-start-quiz');
-            const statusTxt = document.getElementById('quiz-status-text');
+            // Konfigurasi Tombol Kuis (Sudah pernah dikerjakan atau belum)
+            const btnQuiz = $('btn-start-quiz');
+            const statusTxt = $('quiz-status-text');
             const completedInfo = user.completedStories[id];
             
             if(completedInfo) {
@@ -1238,82 +1242,74 @@
                     statusTxt.classList.remove('hidden');
                 }
             } else {
-                btnQuiz.className = "btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600";
-                btnQuiz.innerHTML = `<i data-lucide="play" class="w-4 h-4 inline mr-1"></i> Mulai Kuis`;
+                btnQuiz.className = "btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600 text-lg";
+                btnQuiz.innerHTML = `Mulai Kuis`;
                 btnQuiz.disabled = false;
                 btnQuiz.onclick = () => startQuiz(false);
                 statusTxt.classList.add('hidden');
             }
 
-            // ===== INISIALISASI AUDIO CERITA =====
-            // Reset state pemutar audio lama
+            // Atur Pemutar Audio Cerita
             storyAudio.pause();
             isStoryPlaying = false;
-            document.getElementById('audio-progress-fill').style.width = '0%';
-            document.getElementById('audio-timer').innerText = "00:00 / 00:00";
+            if ($('audio-progress-fill')) $('audio-progress-fill').style.width = '0%';
+            if ($('audio-timer')) $('audio-timer').innerText = "00:00 / 00:00";
             updatePlayIcon();
             
-            const audioContainer = document.querySelector('.bg-sky-500.rounded-full'); // Bar biru tempat tombol berada
-            const btnToggle = document.getElementById('btn-toggle-audio');
+            const audioContainer = document.querySelector('.bg-sky-500.rounded-full'); 
 
             if (story.audioUrl) {
-                // Jika cerita ini punya MP3, tampilkan bar biru dan muat lagunya
-                audioContainer.style.display = "flex";
+                if (audioContainer) audioContainer.style.display = "flex";
                 storyAudio.src = story.audioUrl;
                 
-                // Ketika file MP3 berhasil dimuat, tuliskan total durasi di ujung kanan bar
                 storyAudio.onloadedmetadata = () => {
                     const totalMin = String(Math.floor(storyAudio.duration / 60)).padStart(2, '0');
                     const totalSec = String(Math.floor(storyAudio.duration % 60)).padStart(2, '0');
-                    document.getElementById('audio-timer').innerText = `00:00 / ${totalMin}:${totalSec}`;
+                    if ($('audio-timer')) $('audio-timer').innerText = `00:00 / ${totalMin}:${totalSec}`;
                 };
-                
-                // KITA HAPUS bgm.pause() DI SINI KARENA BGM AKAN TETAP MENYALA
             } else {
-                // Jika cerita belum diinput MP3-nya, Sembunyikan bar biru sama sekali
-                audioContainer.style.display = "none";
+                if (audioContainer) audioContainer.style.display = "none";
                 storyAudio.src = "";
             }
 
-            // Catat waktu mulai membaca untuk rekap guru
             user.currentReadingStart = Date.now();
 
             showScreen('reader');
             lucide.createIcons();
         }
 
+        // Fungsi menutup buku cerita dan kembali ke layar sebelumnya
         function closeReader(targetScreen = 'library') {
-            // Matikan dan reset audio cerita jika sedang berjalan
             storyAudio.pause();
             storyAudio.currentTime = 0;
             isStoryPlaying = false;
 
-            // Kembalikan volume BGM ke normal (5%) dan pastikan tetap berputar
             bgm.volume = 0.05;
             bgm.play().catch(e => {});
             isBgmPlaying = true;
 
-            // Hitung berapa detik siswa membaca cerita tadi
             const timeSpent = (Date.now() - user.currentReadingStart) / 1000;
             user.readTimes.push(timeSpent);
             user.readStories++; 
             
-            // Pindah ke layar yang dituju (defaultnya ke library)
             showScreen(targetScreen);
         }
 
+        // Fungsi ketika tombol "Mulai Kuis" ditekan
         function startQuiz(isRemedi) {
             const story = libraryData.find(s => s.id === currentStoryId);
             if(!story) return;
 
             quizState = { active: true, questions: [], currentIndex: 0, score: 0, isRemedial: isRemedi, isTransitioning: false };
             
+            // Mengacak urutan pertanyaan kuis
             let shuffled = [...(story.questions || [])].sort(() => 0.5 - Math.random());
             quizState.questions = shuffled.slice(0, 5);
 
             renderQuizQuestion();
-            const modal = document.getElementById('screen-quiz');
-            const content = document.getElementById('quiz-content');
+            
+            const modal = $('screen-quiz');
+            const content = $('quiz-content');
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0');
@@ -1322,14 +1318,15 @@
             }, 10);
         }
 
+        // Menampilkan soal kuis satu per satu
         function renderQuizQuestion() {
             const q = quizState.questions[quizState.currentIndex];
             if(!q) return;
 
-            document.getElementById('quiz-progress-text').innerText = `Pertanyaan ${quizState.currentIndex + 1} dari 5`;
-            document.getElementById('quiz-question').innerText = q.q;
+            $('quiz-progress-text').innerText = `Pertanyaan ${quizState.currentIndex + 1} dari 5`;
+            $('quiz-question').innerText = q.q;
 
-            const box = document.getElementById('quiz-options');
+            const box = $('quiz-options');
             box.innerHTML = q.a.map((txt, i) => `
                 <button id="btn-opt-${i}" onclick="answerQuiz(${i})" class="w-full p-5 bg-white hover:bg-sky-50 hover:border-sky-300 border-4 border-slate-100 rounded-2xl text-left font-black transition-all text-base active:scale-95 shadow-sm text-slate-700">
                     ${txt}
@@ -1341,6 +1338,7 @@
             lucide.createIcons();
         }
 
+        // Fungsi mencocokkan jawaban kuis anak-anak dengan kunci jawaban
         function answerQuiz(selectedIndex) {
             if (quizState.isTransitioning) return;
             quizState.isTransitioning = true;
@@ -1351,7 +1349,7 @@
             }
 
             const buttons = document.querySelectorAll('#quiz-options button');
-            const expBox = document.getElementById('quiz-explanation');
+            const expBox = $('quiz-explanation');
 
             let isCorrect = (selectedIndex === q.c);
             if(soundClick) soundClick.play();
@@ -1360,6 +1358,7 @@
                 btn.disabled = true;
                 btn.classList.remove('hover:bg-sky-50', 'hover:border-sky-300', 'active:scale-95');
                 
+                // Jika jawaban Benar, tampilkan warna hijau, jika salah tampilkan merah
                 if (i === q.c) {
                     btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-700');
                     btn.classList.add('bg-emerald-50', 'border-emerald-400', 'text-emerald-800');
@@ -1393,6 +1392,7 @@
             lucide.createIcons();
         }
 
+        // Berpindah ke pertanyaan kuis selanjutnya
         function nextQuizQuestion() {
             quizState.currentIndex++;
             if(quizState.currentIndex < quizState.questions.length) {
@@ -1404,6 +1404,7 @@
             }
         }
 
+        // Menyelesaikan proses kuis dan menyimpan nilai akhir
         function finishQuiz() {
             const totalQuestions = quizState.questions.length || 5;
             const percentage = Math.round((quizState.score / totalQuestions) * 100);
@@ -1421,12 +1422,11 @@
             calculateLevel();
             syncDataToSheet(); 
             
-            document.getElementById('quiz-progress-text').innerText = "HORE! KUIS SELESAI 🎉";
+            $('quiz-progress-text').innerText = "HORE! KUIS SELESAI 🎉";
             
-            // ===== PERUBAHAN TAMPILAN HASIL KUIS DI SINI =====
             let isFail = percentage < 80;
             
-            document.getElementById('quiz-question').innerHTML = `
+            $('quiz-question').innerHTML = `
                 <div class="bg-sky-50 p-6 rounded-[2rem] border-4 border-sky-100 text-center mx-auto max-w-lg mt-4">
                     <h4 class="text-sm font-black text-sky-600 uppercase tracking-widest mb-2">Nilai Kuis Kamu</h4>
                     <div class="text-6xl font-black ${isFail ? 'text-amber-500' : 'text-sky-500'} mb-6 title-fun">${percentage}</div>
@@ -1448,7 +1448,6 @@
                     </div>
                 </div>
             `;
-            // ===================================================
             
             let actionHtml = '';
             if(percentage < 80 && !quizState.isRemedial) {
@@ -1465,19 +1464,24 @@
                 `;
             }
 
-            document.getElementById('quiz-options').innerHTML = actionHtml;
+            $('quiz-options').innerHTML = actionHtml;
             lucide.createIcons();
         }
 
+        // Fungsi pemeriksa otomatis (Koreksi Sintetis) saat anak-anak menulis ulang cerita
         async function submitWriting() {
-            const text = document.getElementById('writing-input').value.trim();
+            const text = $('writing-input').value.trim();
             const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
             
-            if(wordCount < 10) { showToast("Tulisanmu masih terlalu pendek. Ayo ceritakan lebih banyak lagi!"); return; }
+            if(wordCount < 10) { 
+                showToast("Tulisanmu masih terlalu pendek. Ayo ceritakan lebih banyak lagi!"); 
+                return; 
+            }
 
-            const btn = document.getElementById('btn-submit-writing');
+            const btn = $('btn-submit-writing');
             btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Eyang Semar sedang membaca...';
-            btn.disabled = true; lucide.createIcons();
+            btn.disabled = true; 
+            lucide.createIcons();
 
             setTimeout(() => {
                 const story = libraryData.find(s => s.id === currentStoryId);
@@ -1485,6 +1489,7 @@
                 
                 let baseScore = 0, keywordScore = 0, lengthScore = 0, feedback = "";
 
+                // Mengecek kata penting dengan mencocokkan tulisan anak dan cerita asli
                 const ignoreWords = ['yang', 'dan', 'di', 'ke', 'dari', 'pada', 'dalam', 'dengan', 'itu', 'ini', 'sebuah', 'seorang', 'mereka', 'ia', 'karena', 'untuk', 'lalu', 'adalah', 'bahwa'];
                 let storyWords = story.content.toLowerCase().replace(/<br>/g, ' ').replace(/[^a-z ]/g, '').split(/\s+/);
                 let uniqueStoryWords = [...new Set(storyWords)].filter(w => w.length > 4 && !ignoreWords.includes(w));
@@ -1493,6 +1498,7 @@
                 let studentWords = [...new Set(lowercaseText.replace(/[^a-z ]/g, '').split(/\s+/))];
                 studentWords.forEach(word => { if (uniqueStoryWords.includes(word)) matchedKeywords++; });
 
+                // Penilaian
                 if (matchedKeywords >= 3) {
                     baseScore = 50; keywordScore = 25; 
                     feedback = "Wah, tulisanmu bagus sekali! Kamu ingat bagian-bagian penting dari ceritanya.";
@@ -1508,14 +1514,16 @@
                 }
 
                 let score = Math.min(baseScore + keywordScore + lengthScore, 100);
-                user.exp += score; calculateLevel();
+                user.exp += score; 
+                calculateLevel();
 
-                document.getElementById('writing-input').style.display = 'none';
+                $('writing-input').style.display = 'none';
                 btn.style.display = 'none';
 
                 let isFail = score === 0;
 
-                document.getElementById('writing-result').innerHTML = `
+                // Tampilan hasil evaluasi tulisan
+                $('writing-result').innerHTML = `
                     <div class="mb-6 p-6 bg-white border-4 border-slate-100 rounded-2xl shadow-sm text-left">
                         <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Tulisan Hebatmu:</p>
                         <p class="text-base text-slate-700 font-medium italic leading-relaxed">"${text}"</p>
@@ -1552,16 +1560,18 @@
         }
 
         // ==========================================
-        // INISIALISASI
+        // FUNGSI PENGATUR LALU LINTAS LAYAR (NAVIGASI)
         // ==========================================
+        
+        // Membuka menu/layar tertentu dan menyembunyikan yang lainnya
         function showScreen(id) {
             const screens = ['home', 'library', 'reader', 'teacher', 'leaderboard'];
             screens.forEach(s => {
-                const el = document.getElementById(`screen-${s}`);
+                const el = $(`screen-${s}`);
                 if(el && !el.classList.contains('hidden')) { el.classList.add('hidden'); }
             });
             
-            const target = document.getElementById(`screen-${id}`);
+            const target = $(`screen-${id}`);
             if (target) {
                 target.classList.remove('hidden');
                 target.classList.remove('screen-transition');
@@ -1569,34 +1579,32 @@
                 target.classList.add('screen-transition');
             }
 
-            // ===== PENAMBAHAN LOGIKA AUDIO =====
-            // Jika pindah ke layar APAPUN SELAIN 'reader', matikan audio cerita secara paksa
+            // Jika pindah dari halaman cerita, matikan suara lagu ceritanya
             if (id !== 'reader' && isStoryPlaying) {
                 storyAudio.pause();
                 storyAudio.currentTime = 0;
                 isStoryPlaying = false;
                 
-                // Kembalikan volume BGM ke normal (5%)
                 bgm.volume = 0.05;
                 
-                // Update ikon play/pause jika diperlukan
-                const iconContainer = document.getElementById('audio-icon');
+                const iconContainer = $('audio-icon');
                 if(iconContainer) {
                     iconContainer.setAttribute('data-lucide', 'play');
                     iconContainer.classList.add('ml-1');
                     lucide.createIcons();
                 }
             }
-            // ===================================
 
             if(id === 'library') renderLibrary();
             if(id === 'teacher') renderTeacherTableFull();
             if(id === 'leaderboard') updateLeaderboardUI();
-            window.scrollTo(0,0);
+            
+            window.scrollTo(0,0); // Gulung halaman otomatis ke atas
         }
 
+        // Menutup jendela notifikasi yang melayang (Modal)
         function closeModal(id) {
-            const modal = document.getElementById(id);
+            const modal = $(id);
             if(!modal) return;
             const content = modal.firstElementChild;
             content.classList.remove('scale-100');
@@ -1605,40 +1613,47 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
+        // Memunculkan kotak peringatan/pesan kecil di atas layar
         function showToast(msg, type='error') {
             const toast = document.createElement('div');
             toast.className = `fixed top-24 left-1/2 -translate-x-1/2 px-6 py-4 rounded-full text-white font-bold shadow-xl z-[999] animate-in slide-in-from-top-4 fade-in duration-300 ${type === 'error' ? 'bg-red-500 border-b-4 border-red-700' : 'bg-emerald-500 border-b-4 border-emerald-700'} flex items-center gap-3 text-sm whitespace-nowrap`;
             toast.innerHTML = (type === 'success' ? '<i data-lucide="check-circle" class="w-5 h-5"></i> ' : '<i data-lucide="alert-circle" class="w-5 h-5"></i> ') + msg;
             document.body.appendChild(toast);
             lucide.createIcons();
+            
             setTimeout(() => {
                 toast.classList.add('opacity-0', 'transition-opacity', 'duration-500', '-translate-y-4');
                 setTimeout(() => toast.remove(), 500);
-            }, 3000);
+            }, 3000); // Pesan hilang dalam 3 detik
         }
 
+        // Fungsi ketika memilih gambar profil / avatar yang baru
         function selectAvatar(id) {
             user.activeld = id;
             document.querySelectorAll('#prof-char-list > div').forEach(el => {
                 el.classList.remove('border-sky-500', 'bg-sky-50');
                 el.classList.add('border-slate-200');
             });
-            document.getElementById(`avatar-opt-${id}`).classList.add('border-sky-500', 'bg-sky-50');
-            document.getElementById(`avatar-opt-${id}`).classList.remove('border-slate-200');
+            const selectedOpt = $(`avatar-opt-${id}`);
+            if (selectedOpt) {
+                selectedOpt.classList.add('border-sky-500', 'bg-sky-50');
+                selectedOpt.classList.remove('border-slate-200');
+            }
             
-            const mainAvatar = document.getElementById('prof-avatar-main');
+            const mainAvatar = $('prof-avatar-main');
             if(id === 'arjuna') mainAvatar.innerHTML = '<i data-lucide="shield" class="w-16 h-16 text-sky-500"></i>';
             else if(id === 'bima') mainAvatar.innerHTML = '<i data-lucide="swords" class="w-16 h-16 text-sky-500"></i>';
             else mainAvatar.innerHTML = '<i data-lucide="crown" class="w-16 h-16 text-sky-500"></i>';
+            
             lucide.createIcons();
         }
-        
 
+        // Fungsi pertama kali yang dijalankan sesaat setelah seluruh halaman termuat
         window.onload = () => {
             lucide.createIcons();
             
-            // Setup avatar selection list
-            const avatarList = document.getElementById('prof-char-list');
+            // Mempersiapkan daftar pilihan avatar di buku profil pemain
+            const avatarList = $('prof-char-list');
             if(avatarList) {
                 const avatars = [
                     {id: 'arjuna', icon: 'shield', name: 'Pelindung'},
@@ -1652,10 +1667,10 @@
                     </div>
                 `).join('');
             }
-            selectAvatar(user.activeld); // init default
             
+            selectAvatar(user.activeld);
             calculateLevel(); 
-            showScreen('home');
+            showScreen('home'); // Buka halaman beranda
         };
     </script>
 </body>
