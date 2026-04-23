@@ -468,6 +468,11 @@
                             <input id="input-username" type="text" value="Satria Amarta" class="bg-transparent text-xl font-black text-slate-800 focus:outline-none w-full text-center md:text-left focus:border-b-2 focus:border-sky-300 pb-1 transition-all">
                         </div>
                         
+                        <div class="bg-white p-4 rounded-xl border-2 border-rose-100 shadow-sm flex flex-col items-center md:items-start">
+                            <label class="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1 ml-1">Kata Sandi (PIN)</label>
+                            <input id="input-password" type="password" placeholder="Contoh: 1234" class="bg-transparent text-xl font-black text-slate-800 focus:outline-none w-full text-center md:text-left focus:border-b-2 focus:border-rose-300 pb-1 transition-all">
+                        </div>
+                        
                         <div class="bg-white p-5 rounded-xl border-2 border-sky-100 shadow-sm w-full">
                             <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-3 sm:gap-0 mb-3">
                                 <div class="text-center sm:text-left">
@@ -568,9 +573,10 @@
                 
                 // Menyamakan format data yang datang agar rapi
                 const normalizedData = data.map(item => ({
-                    nama: item.Nama || item.nama || "",
+                    nama: (item.Nama || item.nama || "").trim(),
+                    pin: (item.Pin || item.pin || "").toString().trim(), // <--- BACA PIN DARI SERVER
                     sekolah: item.Sekolah || item.sekolah || "SDN 1 Amarta",
-                    level: item.Level || item.level || 1,
+                    level: parseInt(item.Level || item.level || 1),
                     exp: parseInt(item.Exp || item.exp || item.EXP || 0),
                     avgScore: parseInt(item.AvgScore || item.avgScore || item.avgscore || 0),
                     readStories: parseInt(item.ReadStories || item.readStories || item.readstories || 0),
@@ -579,17 +585,25 @@
 
                 // Memasukkan juga nilai pemain yang sedang aktif ke dalam daftar
                 const userIndex = normalizedData.findIndex(s => s.nama === user.name);
+                
                 let totalScore = 0, totalCount = 0;
-                Object.values(user.completedStories).forEach(st => { totalScore += st.score; totalCount++; });
+                Object.values(user.completedStories).forEach(st => { 
+                    // PERBAIKAN: Gunakan quizScore, bukan score
+                    if (st.quizScore !== undefined) { totalScore += st.quizScore; totalCount++; } 
+                });
+                
+                // Gunakan nilai cadangan dari server jika memori lokal kosong
+                const localAvgScore = totalCount > 0 ? Math.round(totalScore / totalCount) : (user.serverAvgScore || 0);
+                const localTotalTime = user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / 60) : (user.serverTotalTime || 0);
                 
                 const currentUserData = {
                     nama: user.name,
                     sekolah: "SDN 1 Amarta",
                     level: user.level,
                     exp: user.exp,
-                    avgScore: totalCount > 0 ? Math.round(totalScore / totalCount) : 0,
+                    avgScore: localAvgScore,
                     readStories: user.readStories,
-                    avgTime: user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / user.readTimes.length / 60) : 0
+                    avgTime: localTotalTime
                 };
 
                 if(userIndex !== -1) {
@@ -608,34 +622,38 @@
 
         // Fungsi untuk mengirim data nilai pemain ke buku catatan guru (Google Sheets) melalui internet
         async function syncDataToSheet() {
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === "") return;
+            // Jangan simpan ke lemari jika masih akun Guest
+            if (user.name === "Satria Amarta") return;
 
-            let totalScore = 0, totalCount = 0;
-            Object.values(user.completedStories).forEach(st => { totalScore += st.score; totalCount++; });
-            const avgScore = totalCount > 0 ? Math.round(totalScore / totalCount) : 0;
-            const avgTime = user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / user.readTimes.length / 60) : 0;
+            // Update Lemari Arsip Lokal
+            let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
+            localDB[user.name.toLowerCase()] = user;
+            localStorage.setItem('arsiLokaProfiles', JSON.stringify(localDB));
 
+            if (!GOOGLE_SCRIPT_URL) return;
+
+            // CEGAH OVERWRITE DATA 0: Jika EXP 0 padahal sudah pernah baca buku/punya nilai, jangan kirim!
+            if (user.exp === 0 && (user.serverAvgScore > 0 || user.readStories > 0)) return;
+
+            let totalScore = 0, validQuizCount = 0;
+            Object.values(user.completedStories).forEach(st => { 
+                if (st.quizAttempts > 0) { totalScore += (st.quizScore || 0); validQuizCount++; } 
+            });
+            
             const payload = {
                 oldName: user.originalName, 
                 nama: user.name,
+                pin: user.pin,
                 sekolah: "SDN 1 Amarta", 
-                level: user.level,
-                exp: user.exp,
-                avgScore: avgScore,
+                level: user.level, exp: user.exp,
+                avgScore: validQuizCount > 0 ? Math.round(totalScore / validQuizCount) : (user.serverAvgScore || 0),
                 readStories: user.readStories, 
-                avgTime: avgTime
+                avgTime: user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / 60) : (user.serverTotalTime || 0)
             };
 
             try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-            } catch (e) {
-                console.error("Gagal sinkron:", e);
-            }
+                fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            } catch (e) { console.error(e); }
         }
 
         // Fungsi untuk menampilkan papan juara berdasarkan skor
@@ -643,65 +661,41 @@
             const data = await fetchLeaderboardData();
             if (data.length === 0) return; 
 
-            // HANYA MENGAMBIL DATA SEKOLAH SAJA
-            const schoolRank = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a, b) => b.exp - a.exp);
-            const userSchoolRank = schoolRank.findIndex(s => s.nama === user.name) + 1;
+            // Mengurutkan siswa berdasarkan total EXP tertinggi dari sekolah SDN 1 Amarta
+            // Pastikan perbandingan menggunakan angka (Number)
+            const schoolRank = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a, b) => Number(b.exp) - Number(a.exp));
+            
+            // Mencari urutan peringkat user yang sedang bermain
+            const userSchoolRank = schoolRank.findIndex(s => s.nama.toLowerCase() === user.name.toLowerCase()) + 1;
             const totalSchool = schoolRank.length;
             
-            // Menghitung persentase kehebatan (peringkat)
+            // Menghitung persentil kehebatan untuk progress bar
             let percentile = 0;
             if (userSchoolRank > 0 && totalSchool > 1) {
                percentile = Math.round(((totalSchool - userSchoolRank) / totalSchool) * 100);
             }
 
-            // Ganti isi tulisan pada kotak Papan Peringkat
-            const leaderboardContainer = document.querySelector('#screen-leaderboard .grid');
-            if (leaderboardContainer) {
-                leaderboardContainer.className = "flex justify-center"; 
-                
-                leaderboardContainer.innerHTML = `
-                    <div class="kid-panel w-full max-w-2xl p-8 rounded-[2rem] flex flex-col justify-between border-amber-200 shadow-[0_8px_0px_#fde68a]" style="animation: slideUpFade 0.5s ease-out forwards;">
-                        <div>
-                            <div class="flex justify-between items-start mb-6">
-                                <div>
-                                    <p class="text-sm text-amber-600 font-black uppercase tracking-wider">Juara Sekolah</p>
-                                    <h3 class="text-6xl font-black text-slate-800 mt-2">#${userSchoolRank > 0 ? userSchoolRank : '?'} <span class="text-2xl text-slate-400 font-bold">dari ${totalSchool}</span></h3>
-                                    <p class="text-xs font-black text-amber-700 mt-3 bg-amber-100 inline-block px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">SDN 1 Amarta</p>
-                                </div>
-                                <div class="w-20 h-20 bg-amber-50 border-4 border-amber-200 rounded-full flex items-center justify-center shadow-sm">
-                                    <i data-lucide="users" class="w-10 h-10 text-amber-500"></i>
-                                </div>
-                            </div>
+            // Memperbarui teks nomor peringkat dan total siswa
+            const rankTextEl = $('rank-sch');
+            const totalTextEl = $('total-sch');
+            if(rankTextEl) rankTextEl.innerText = userSchoolRank > 0 ? userSchoolRank : '?';
+            if(totalTextEl) totalTextEl.innerText = totalSchool;
 
-                            <div class="mt-8 bg-sky-50 p-6 rounded-2xl border-2 border-sky-100 mb-6">
-                                <div class="flex justify-between text-sm font-black mb-3">
-                                    <span class="text-sky-700">Tingkat Kehebatanmu</span>
-                                    <span class="text-sky-600 bg-white px-3 py-1 rounded-full border border-sky-200 shadow-sm">Top ${100 - percentile}%</span>
-                                </div>
-                                <div class="w-full h-4 bg-white rounded-full overflow-hidden border border-sky-200">
-                                    <div class="h-full bg-sky-400 transition-all duration-1000 rounded-full" style="width: ${percentile}%"></div>
-                                </div>
-                                <p class="text-xs text-sky-600 mt-3 font-bold">Wow! Kamu lebih hebat dari ${percentile}% teman satu sekolahmu!</p>
-                            </div>
-                            
-                            <div class="bg-gradient-to-b from-amber-50 to-white p-6 rounded-2xl border-2 border-amber-100 flex flex-col items-center justify-center min-h-[140px]" id="school-avatar-container">
-                                <p class="text-xs text-amber-500 font-bold mb-4">Teman-teman teratas:</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                            <button onclick="updateLeaderboardUI()" class="btn-kid-outline w-full py-4 flex items-center justify-center gap-2">
-                                <i data-lucide="refresh-cw" class="w-5 h-5"></i> Cek Peringkat Baru
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
+            // Memperbarui progress bar persentil
+            const pctValEl = $('pct-val');
+            const pctBarEl = $('pct-bar');
+            const pctDescEl = $('pct-desc');
             
-            // Memunculkan gambar teman yang memiliki peringkat paling atas
+            if(pctValEl) pctValEl.innerText = (100 - percentile);
+            if(pctBarEl) pctBarEl.style.width = `${percentile}%`;
+            if(pctDescEl) pctDescEl.innerText = `Wow! Kamu lebih hebat dari ${percentile}% teman satu sekolahmu!`;
+            
+            // Menyuntikkan lingkaran inisial teman ke dalam wadah (container)
             const avatarContainer = $('school-avatar-container');
             if (avatarContainer) {
                 let avatarHtml = '<p class="text-xs text-amber-500 font-bold mb-4">Teman-teman teratas:</p><div class="flex -space-x-3">';
+                
+                // Menampilkan 3 peringkat teratas
                 for(let i=0; i<Math.min(3, schoolRank.length); i++){
                     let isMe = schoolRank[i].nama === user.name;
                     if(isMe){
@@ -710,9 +704,12 @@
                          avatarHtml += `<div class="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center text-sm font-black text-slate-600 shadow-md z-${30-i*10} border-4 border-white" title="${schoolRank[i].nama}">${schoolRank[i].nama.substring(0,3).toUpperCase()}</div>`;
                     }
                 }
+                
+                // Jika user yang bermain bukan di peringkat 1, 2, atau 3, tampilkan posisinya terpisah di ujung kanan
                 if(userSchoolRank > 3) {
                      avatarHtml += `<div class="w-16 h-16 rounded-full bg-sky-500 flex items-center justify-center text-xs font-black text-white shadow-md z-0 scale-110 ml-6 border-4 border-white" title="${user.name}">Kamu</div>`;
                 }
+                
                 avatarHtml += '</div>';
                 avatarContainer.innerHTML = avatarHtml;
             }
@@ -720,14 +717,17 @@
             lucide.createIcons();
         }
 
-        // Fungsi untuk mengambil data agar guru bisa melihat rapor seluruh siswa
+       // Fungsi untuk mengambil data agar guru bisa melihat rapor seluruh siswa
         async function renderTeacherTableFull() {
             const tbody = $('teacher-table-body');
             tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Membuka buku catatan...</td></tr>';
             lucide.createIcons();
 
             const data = await fetchLeaderboardData();
-            const schoolData = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a,b) => b.avgScore - a.avgScore);
+            
+            // --- PERBAIKAN: Ubah b.avgScore - a.avgScore menjadi b.exp - a.exp ---
+            const schoolData = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a,b) => b.exp - a.exp);
+            // ---------------------------------------------------------------------
 
             if (schoolData.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm">Belum ada siswa yang bermain.</td></tr>';
@@ -936,9 +936,14 @@
         ];
 
         // Data awal pemain saat aplikasi baru dibuka
+        // Data awal pemain saat aplikasi baru dibuka (Diubah agar membaca dari memori perangkat)
+        // Membaca data yang mungkin tersisa di perangkat
+        // --- PERBAIKAN 1: Gunakan penyimpanan Multi-Akun (Profiles) ---
+        // --- PERBAIKAN 1: Deteksi Akun Aktif Saat Refresh ---
         let user = { 
             originalName: "Satria Amarta",
             name: "Satria Amarta", 
+            pin: "", 
             exp: 0, 
             level: 1,
             title: "Prajurit Cilik",
@@ -947,8 +952,25 @@
             quizScores: [],
             readStories: 0,
             sqCount: 0,
-            completedStories: {} 
+            completedStories: {},
+            serverAvgScore: 0,
+            serverTotalTime: 0
         };
+
+        // Fungsi baru untuk mengecek cerita mana saja yang sudah memenuhi 3 syarat!
+        function updateReadStoriesCount() {
+            let count = 0;
+            for (let id in user.completedStories) {
+                let s = user.completedStories[id];
+                // MODE MAHAGURU: Langsung lulus
+                if (user.name.toLowerCase() === "mahaguru") { count++; continue; }
+                
+                if ((s.quizScore || 0) >= 80 && (s.writingScore || 0) >= 50 && (s.readTime || 0) >= 60) {
+                    count++;
+                }
+            }
+            user.readStories = count;
+        }
 
         // Batas nilai pengalaman (EXP) untuk naik ke level berikutnya
         const levelThresholds = [0, 100, 250, 450, 700, 1000, 1350, 1750, 2200];
@@ -1034,32 +1056,163 @@
             lucide.createIcons();
         }
 
-        // Fungsi menyimpan data profil (nama pemain) yang baru diketik
-        function saveUserProfile() {
-            const inputUsername = $('input-username');
-            if(inputUsername) {
-                user.name = inputUsername.value;
+        // Fungsi memulihkan data jika nama sudah ada, dan menolak jika PIN salah
+        async function restoreUserDataIfExist(playerName, playerPin) {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
+                const data = await response.json();
+                const serverUser = data.find(s => (s.Nama || s.nama || "").trim().toLowerCase() === playerName.toLowerCase());
+                
+                if (serverUser) {
+                    const serverPin = (serverUser.Pin || serverUser.pin || "").toString().trim();
+                    // JIKA NAMA ADA, CEK APAKAH PIN-NYA SAMA
+                    if (serverPin === playerPin) {
+                        // 1. Ambil data cadangan detail (Kuis & Jam Baca) dari Lemari Arsip Lokal
+                        let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
+                        let myLocalData = localDB[playerName.toLowerCase()];
+
+                        // 2. Tarik Rekap utama dari Server
+                        user.name = playerName;
+                        user.pin = playerPin;
+                        user.originalName = playerName;
+                        user.exp = parseInt(serverUser.Exp || serverUser.exp) || 0;
+                        user.level = parseInt(serverUser.Level || serverUser.level) || 1;
+                        user.readStories = parseInt(serverUser.ReadStories || serverUser.readStories) || 0;
+                        user.serverAvgScore = parseInt(serverUser.AvgScore || serverUser.avgscore) || 0;
+                        user.serverTotalTime = parseInt(serverUser.AvgTime || serverUser.avgtime) || 0;
+
+                        // 3. Pasang kembali detail cerita (Certified) jika pernah dimainkan di perangkat ini
+                        if (myLocalData) {
+                            user.completedStories = myLocalData.completedStories || {};
+                            user.readTimes = myLocalData.readTimes || [];
+                            user.quizScores = myLocalData.quizScores || [];
+                        } else {
+                            user.completedStories = {}; user.readTimes = []; user.quizScores = [];
+                        }
+
+                        // 4. Hitung ulang kelulusan kuis berdasarkan data yang baru dipasang
+                        updateReadStoriesCount();
+                        calculateLevel();
+                        
+                        // 5. Kunci data ini sebagai user aktif
+                        localStorage.setItem('arsiLokaActiveUser', JSON.stringify(user));
+                        
+                        showToast(`Selamat datang kembali, ${playerName}!`, "success");
+                        return true;
+                    } else {
+                        showToast("Kata sandi (PIN) salah! Gunakan PIN yang benar atau buat nama lain.", "error");
+                        return false; 
+                    }
+                } else {
+                    const isRenaming = data.find(s => (s.Nama || s.nama || "").trim().toLowerCase() === user.originalName.toLowerCase());
+                    if (!isRenaming) {
+                        user.exp = 0; user.level = 1; user.readStories = 0;
+                        user.readTimes = []; user.quizScores = []; user.completedStories = {}; user.sqCount = 0;
+                        calculateLevel();
+                    }
+                    showToast("Akun Ksatria Baru berhasil dibuat!", "success");
+                    return true;
+                }
+            } catch(e) {
+                showToast("Identitas Disimpan (Mode Offline).", "success");
+                return true;
             }
+        }
+
+        // Fungsi yang dijalankan saat tombol "Simpan Profil" diklik
+        async function saveUserProfile() {
+            const inputUsername = $('input-username');
+            const inputPin = $('input-password');
+            const MASTER_PIN_GURU = "889911"; // <--- PIN KHUSUS GURU
+
+            if(!inputUsername.value.trim() || !inputPin.value.trim()) {
+                showToast("Nama dan PIN tidak boleh kosong!", "error"); return;
+            }
+
+            const newName = inputUsername.value.trim();
+            const newPin = inputPin.value.trim();
+
+            // Proteksi Nama Mahaguru
+            if (newName.toLowerCase() === "mahaguru" && newPin !== MASTER_PIN_GURU) {
+                showToast("Nama 'Mahaguru' dilindungi! Gunakan PIN Master.", "error"); return;
+            }
+
+            const btn = document.querySelector('#profile-content button[onclick="saveUserProfile()"]');
+            btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Sinkronisasi...';
+            btn.disabled = true; lucide.createIcons();
+
+            // AMBIL DATA TERBARU DARI SERVER DULU
+            const response = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
+            const allUsers = await response.json();
+            const serverUser = allUsers.find(s => (s.Nama || s.nama || "").trim().toLowerCase() === newName.toLowerCase());
+
+            if (serverUser) {
+                if ((serverUser.Pin || serverUser.pin || "").toString() === newPin) {
+                    // PIN COCOK: Ambil rekap dari server
+                    user.name = newName; user.pin = newPin; user.originalName = newName;
+                    user.exp = parseInt(serverUser.Exp || serverUser.exp) || 0;
+                    user.level = parseInt(serverUser.Level || serverUser.level) || 1;
+                    user.readStories = parseInt(serverUser.ReadStories || serverUser.readStories) || 0;
+                    user.serverAvgScore = parseInt(serverUser.AvgScore || serverUser.avgscore) || 0;
+                    user.serverTotalTime = parseInt(serverUser.AvgTime || serverUser.avgtime) || 0;
+
+                    // Ambil detail cerita dari memori laptop (jika ada)
+                    let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
+                    if (localDB[newName.toLowerCase()]) {
+                        let ld = localDB[newName.toLowerCase()];
+                        user.completedStories = ld.completedStories || {};
+                        user.readTimes = ld.readTimes || [];
+                    }
+                    showToast("Progres berhasil dipulihkan!", "success");
+                } else {
+                    showToast("PIN Salah!", "error");
+                    btn.innerHTML = "Simpan Profil"; btn.disabled = false; return;
+                }
+            } else {
+                // USER BARU: Reset Total
+                user = { ...user, name: newName, pin: newPin, originalName: newName, exp: 0, level: 1, readStories: 0, completedStories: {} };
+                showToast("Akun baru dibuat!", "success");
+            }
+
+            calculateLevel();
+            updateReadStoriesCount();
+            // Simpan status aktif ke browser
+            localStorage.setItem('arsiLokaActiveUser', JSON.stringify(user));
             
-            showToast("Identitas Berhasil Disimpan!", "success");
             closeModal('screen-profile');
             updateNav();
-            syncDataToSheet();
-            user.originalName = user.name; 
+            btn.innerHTML = "Simpan Profil"; btn.disabled = false;
+            showScreen('home');
+        }
+
+        function finishLoginProcess() {
+            localStorage.setItem('arsiLokaActiveUser', JSON.stringify(user));
+            // Update Lemari Multi-Akun
+            let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
+            localDB[user.name.toLowerCase()] = user;
+            localStorage.setItem('arsiLokaProfiles', JSON.stringify(localDB));
             
-            setTimeout(() => {
-                showScreen('home');
-            }, 300);
+            calculateLevel();
+            syncDataToSheet(); // Jalankan sinkronisasi di latar belakang (non-blocking)
+            closeModal('screen-profile');
+            updateNav();
+            setTimeout(() => { showScreen('home'); }, 300);
         }
 
         // Fungsi untuk melihat berapa banyak cerita dari tingkat tertentu (mudah/sedang/sulit) yang sudah diselesaikan
         function getTierStats(diffLevel) {
             let storiesInTier = libraryData.filter(s => s.diff === diffLevel).map(s => s.id);
-            let completedInTier = storiesInTier.filter(id => user.completedStories[id] !== undefined);
+            // MODE MAHAGURU: Dianggap sudah menyelesaikan semua
+            if (user.name.toLowerCase() === "mahaguru") return { isCleared: true, completedCount: 5, totalCount: 5, avgScore: 100 };
+
+            let completedInTier = storiesInTier.filter(id => {
+                let c = user.completedStories[id];
+                return c && c.quizScore >= 80 && c.writingScore >= 50 && c.readTime >= 60;
+            });
             
             let avgScore = 0;
             if (completedInTier.length > 0) {
-                let sum = completedInTier.reduce((acc, id) => acc + user.completedStories[id].score, 0);
+                let sum = completedInTier.reduce((acc, id) => acc + (user.completedStories[id].quizScore || 0), 0);
                 avgScore = sum / completedInTier.length;
             }
             
@@ -1094,10 +1247,26 @@
             const elLevelTitle = $('nav-level-title');
             const elAvatar = $('nav-avatar');
             
+            // Elemen di dalam Modal Profil (Agar Sinkron)
+            const profExp = $('prof-exp');
+            const profLevel = $('prof-level-num');
+            const profBar = $('prof-exp-bar');
+
             if(elName) elName.innerText = user.name;
             if(elPts) elPts.innerText = user.exp + " EXP";
             if(elLevelTitle) elLevelTitle.innerText = `LV ${user.level}: ${user.title}`;
             
+            // --- SINKRONISASI KE MODAL PROFIL ---
+            if(profExp) profExp.innerText = user.exp;
+            if(profLevel) profLevel.innerText = user.level;
+            if(profBar) {
+                // Hitung progres bar berdasarkan thresholds level
+                const nextLimit = levelThresholds[user.level - 1] || 2200;
+                const percent = Math.min((user.exp / nextLimit) * 100, 100);
+                profBar.style.width = percent + "%";
+            }
+            // -------------------------------------
+
             if(elAvatar) {
                 if(user.activeld === 'arjuna') elAvatar.innerHTML = '<i data-lucide="shield" class="w-6 h-6"></i>';
                 else if(user.activeld === 'bima') elAvatar.innerHTML = '<i data-lucide="swords" class="w-6 h-6"></i>';
@@ -1135,11 +1304,19 @@
             // Menggambar kartu cerita satu per satu
             html += filteredStories.map((story, idx) => {
                 const delay = ((idx + 1) * 0.1);
-                
                 let isLocked = false;
                 let lockMsg = "";
+
+                // --- PERBAIKAN: Mahaguru bebas dari sistem kunci ---
+                if (user.name.toLowerCase() !== "mahaguru") {
+                    if(story.diff === 'Sedang' && !statsMudah.isCleared) {
+                        isLocked = true; lockMsg = "Selesaikan 5 Cerita Mudah dulu ya!";
+                    }
+                    if(story.diff === 'Sulit' && !statsSedang.isCleared) {
+                        isLocked = true; lockMsg = "Selesaikan 5 Cerita Sedang dulu ya!";
+                    }
+                }
                 
-                // Mencegah anak membuka level sulit sebelum menyelesaikan level mudah
                 if(story.diff === 'Sedang' && !statsMudah.isCleared) {
                     isLocked = true; lockMsg = "Selesaikan 5 Cerita Mudah dulu ya!";
                 }
@@ -1150,7 +1327,8 @@
                 const diffColor = story.diff === 'Mudah' ? 'bg-emerald-100 text-emerald-700 border-emerald-300' : (story.diff === 'Sedang' ? 'bg-sky-100 text-sky-700 border-sky-300' : 'bg-amber-100 text-amber-700 border-amber-300');
                 const styleData = getStoryIconStyle(story.id);
 
-                const isCleared = user.completedStories[story.id] && user.completedStories[story.id].score >= 80;
+                const cInfo = user.completedStories[story.id];
+                const isCleared = cInfo && cInfo.quizScore >= 80 && cInfo.writingScore >= 50 && cInfo.readTime >= 60;
                 
                 const checkmarkHtml = isCleared ? `
                 <div class="absolute top-4 right-4 z-30 drop-shadow-md transform rotate-12 animate-in zoom-in">
@@ -1189,6 +1367,12 @@
 
         // Fungsi ketika buku cerita diklik dan halaman membaca terbuka
         function openStory(id) {
+            if (user.name === "Satria Amarta" && user.pin === "") {
+                showToast("Kamu harus membuat akun atau Login dulu di menu Profil!", "error");
+                showScreen('profile'); 
+                return; 
+            }
+
             const story = libraryData.find(s => s.id === id);
             if(!story) return;
             
@@ -1206,41 +1390,94 @@
                 </div>
             `;
 
-            // Reset Kotak Tantangan Menulis
-            $('writing-input').value = '';
-            $('writing-input').style.display = 'block';
-            
+            // Buat penyimpanan data cerita jika baru pertama kali dibuka
+            if (!user.completedStories[id]) {
+                user.completedStories[id] = { quizScore: 0, writingScore: 0, readTime: 0, quizAttempts: 0, writingAttempts: 0 };
+            }
+            const cInfo = user.completedStories[id];
+
+            // PENGATURAN TOMBOL MENULIS (Maksimal 2x)
+            // PENGATURAN TOMBOL MENULIS (Maksimal 2x untuk siswa, Bebas untuk Mahaguru)
+            const writeInput = $('writing-input');
             const btnSubmit = $('btn-submit-writing');
-            if (btnSubmit) {
+            const writeResult = $('writing-result');
+            writeResult.innerHTML = '';
+            
+            const isGuru = user.name.toLowerCase() === "mahaguru";
+            
+            if (!isGuru && cInfo.writingScore >= 50) {
+                writeInput.style.display = 'none';
+                btnSubmit.style.display = 'none';
+                writeResult.innerHTML = `<div class="p-4 bg-emerald-100 text-emerald-700 font-bold rounded-xl text-center border-2 border-emerald-300">Hebat! Tulisanmu sudah dinilai dengan skor ${cInfo.writingScore}.</div>`;
+            } else if (!isGuru && cInfo.writingAttempts >= 2) {
+                writeInput.style.display = 'none';
+                btnSubmit.style.display = 'none';
+                writeResult.innerHTML = `<div class="p-4 bg-red-100 text-red-700 font-bold rounded-xl text-center border-2 border-red-300">Kesempatan menulis habis. Nilai terakhirmu: ${cInfo.writingScore}.</div>`;
+            } else {
+                writeInput.style.display = 'block';
+                writeInput.value = '';
                 btnSubmit.style.display = 'flex';
                 btnSubmit.disabled = false;
-                btnSubmit.innerHTML = '<i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai';
+                btnSubmit.innerHTML = (!isGuru && cInfo.writingAttempts === 1) 
+                    ? '<i data-lucide="send" class="w-5 h-5"></i> Coba Menulis Lagi (Sisa 1x)' 
+                    : '<i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai';
             }
             
-            if ($('writing-result')) {
-                $('writing-result').innerHTML = '';
-            }
-            
-            // Konfigurasi Tombol Kuis (Sudah pernah dikerjakan atau belum)
+            // PENGATURAN TOMBOL KUIS (Maksimal 2x untuk siswa, Bebas untuk Mahaguru)
             const btnQuiz = $('btn-start-quiz');
             const statusTxt = $('quiz-status-text');
-            const completedInfo = user.completedStories[id];
             
-            if(completedInfo) {
-                btnQuiz.innerHTML = `<i data-lucide="star" class="w-4 h-4 inline mr-1 fill-current"></i> Nilai Kamu: ${completedInfo.score}`;
-                if(completedInfo.score < 80 && (completedInfo.remedialCount || 0) < 1) {
-                    btnQuiz.className = "btn-kid-outline w-full bg-red-50 border-red-400 text-red-600 shadow-[0_4px_0_#f87171]";
-                    btnQuiz.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Coba Kuis Lagi (1x)`;
-                    btnQuiz.onclick = () => startQuiz(true);
-                    statusTxt.innerText = "Nilaimu belum 80, ayo coba lagi!";
-                    statusTxt.classList.remove('hidden');
-                } else {
-                    btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-emerald-100 text-emerald-600 border-4 border-emerald-200 cursor-not-allowed flex items-center justify-center";
-                    btnQuiz.disabled = true;
-                    btnQuiz.onclick = null;
-                    statusTxt.innerText = "Hebat! Kuis sudah diselesaikan.";
-                    statusTxt.classList.remove('hidden');
-                }
+            if(!isGuru && cInfo.quizScore >= 80) {
+                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-emerald-100 text-emerald-600 border-4 border-emerald-200 cursor-not-allowed flex items-center justify-center";
+                btnQuiz.innerHTML = `<i data-lucide="star" class="w-4 h-4 inline mr-1 fill-current"></i> Nilai Kuis: ${cInfo.quizScore}`;
+                btnQuiz.disabled = true;
+                btnQuiz.onclick = null;
+                statusTxt.innerText = "Hebat! Kuis sudah diselesaikan.";
+                statusTxt.classList.remove('hidden');
+            } else if (!isGuru && cInfo.quizAttempts >= 2) {
+                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-red-100 text-red-600 border-4 border-red-200 cursor-not-allowed flex items-center justify-center";
+                btnQuiz.innerHTML = `<i data-lucide="x" class="w-4 h-4 inline mr-1"></i> Kesempatan Kuis Habis`;
+                btnQuiz.disabled = true;
+                btnQuiz.onclick = null;
+                statusTxt.innerText = `Nilai terakhir: ${cInfo.quizScore}`;
+                statusTxt.classList.remove('hidden');
+            } else if (!isGuru && cInfo.quizAttempts === 1) {
+                btnQuiz.className = "btn-kid-outline w-full bg-amber-50 border-amber-400 text-amber-600 shadow-[0_4px_0_#fbbf24]";
+                btnQuiz.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Coba Kuis Lagi (Sisa 1x)`;
+                btnQuiz.disabled = false;
+                btnQuiz.onclick = () => startQuiz(true);
+                statusTxt.innerText = `Nilai sebelumnya: ${cInfo.quizScore}`;
+                statusTxt.classList.remove('hidden');
+            } else {
+                btnQuiz.className = "btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600 text-lg";
+                btnQuiz.innerHTML = `Mulai Kuis`;
+                btnQuiz.disabled = false;
+                btnQuiz.onclick = () => startQuiz(false);
+                statusTxt.classList.add('hidden');
+            }
+    
+            
+            if(cInfo.quizScore >= 80) {
+                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-emerald-100 text-emerald-600 border-4 border-emerald-200 cursor-not-allowed flex items-center justify-center";
+                btnQuiz.innerHTML = `<i data-lucide="star" class="w-4 h-4 inline mr-1 fill-current"></i> Nilai Kuis: ${cInfo.quizScore}`;
+                btnQuiz.disabled = true;
+                btnQuiz.onclick = null;
+                statusTxt.innerText = "Hebat! Kuis sudah diselesaikan.";
+                statusTxt.classList.remove('hidden');
+            } else if (cInfo.quizAttempts >= 2) {
+                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-red-100 text-red-600 border-4 border-red-200 cursor-not-allowed flex items-center justify-center";
+                btnQuiz.innerHTML = `<i data-lucide="x" class="w-4 h-4 inline mr-1"></i> Kesempatan Kuis Habis`;
+                btnQuiz.disabled = true;
+                btnQuiz.onclick = null;
+                statusTxt.innerText = `Nilai terakhir: ${cInfo.quizScore}`;
+                statusTxt.classList.remove('hidden');
+            } else if (cInfo.quizAttempts === 1) {
+                btnQuiz.className = "btn-kid-outline w-full bg-amber-50 border-amber-400 text-amber-600 shadow-[0_4px_0_#fbbf24]";
+                btnQuiz.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Coba Kuis Lagi (Sisa 1x)`;
+                btnQuiz.disabled = false;
+                btnQuiz.onclick = () => startQuiz(true);
+                statusTxt.innerText = `Nilai sebelumnya: ${cInfo.quizScore}`;
+                statusTxt.classList.remove('hidden');
             } else {
                 btnQuiz.className = "btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600 text-lg";
                 btnQuiz.innerHTML = `Mulai Kuis`;
@@ -1249,7 +1486,6 @@
                 statusTxt.classList.add('hidden');
             }
 
-            // Atur Pemutar Audio Cerita
             storyAudio.pause();
             isStoryPlaying = false;
             if ($('audio-progress-fill')) $('audio-progress-fill').style.width = '0%';
@@ -1257,11 +1493,9 @@
             updatePlayIcon();
             
             const audioContainer = document.querySelector('.bg-sky-500.rounded-full'); 
-
             if (story.audioUrl) {
                 if (audioContainer) audioContainer.style.display = "flex";
                 storyAudio.src = story.audioUrl;
-                
                 storyAudio.onloadedmetadata = () => {
                     const totalMin = String(Math.floor(storyAudio.duration / 60)).padStart(2, '0');
                     const totalSec = String(Math.floor(storyAudio.duration % 60)).padStart(2, '0');
@@ -1273,7 +1507,6 @@
             }
 
             user.currentReadingStart = Date.now();
-
             showScreen('reader');
             lucide.createIcons();
         }
@@ -1288,10 +1521,12 @@
             bgm.play().catch(e => {});
             isBgmPlaying = true;
 
-            const timeSpent = (Date.now() - user.currentReadingStart) / 1000;
-            user.readTimes.push(timeSpent);
-            user.readStories++; 
+            const timeSpentSeconds = Math.round((Date.now() - user.currentReadingStart) / 1000);
+            user.readTimes.push(timeSpentSeconds); 
+            user.completedStories[currentStoryId].readTime += timeSpentSeconds; // Tambah waktu baca untuk cerita ini
             
+            updateReadStoriesCount(); // Cek kelulusan
+            syncDataToSheet();
             showScreen(targetScreen);
         }
 
@@ -1409,18 +1644,18 @@
             const totalQuestions = quizState.questions.length || 5;
             const percentage = Math.round((quizState.score / totalQuestions) * 100);
             
-            if(!user.quizScores) user.quizScores = [];
             user.quizScores.push(percentage);
             user.exp += Math.round(percentage / 2); 
             
-            let prevData = user.completedStories[currentStoryId] || { score: 0, remedialCount: 0 };
-            user.completedStories[currentStoryId] = {
-                score: Math.max(prevData.score, percentage),
-                remedialCount: quizState.isRemedial ? 1 : prevData.remedialCount
-            };
+            let cStory = user.completedStories[currentStoryId];
+            cStory.quizAttempts += 1; // Tambah jumlah percobaan
+            cStory.quizScore = Math.max(cStory.quizScore, percentage); // Simpan nilai tertinggi
             
+            updateReadStoriesCount(); // Cek kelulusan
             calculateLevel();
             syncDataToSheet(); 
+            
+            // ... (biarkan sisa tampilan hasil kuis di bawahnya tetap sama)
             
             $('quiz-progress-text').innerText = "HORE! KUIS SELESAI 🎉";
             
@@ -1468,10 +1703,12 @@
             lucide.createIcons();
         }
 
-        // Fungsi pemeriksa otomatis (Koreksi Sintetis) saat anak-anak menulis ulang cerita
+        // Fungsi pemeriksa otomatis (Koreksi Sintetis Anti-Plagiarisme) saat anak-anak menulis ulang cerita
         async function submitWriting() {
             const text = $('writing-input').value.trim();
-            const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
+            // Membersihkan teks dari tanda baca berlebih dan mengubah ke huruf kecil
+            const cleanText = text.toLowerCase().replace(/[.,!?;:()]/g, '');
+            const wordCount = cleanText.split(/\s+/).filter(word => word.length > 0).length;
             
             if(wordCount < 10) { 
                 showToast("Tulisanmu masih terlalu pendek. Ayo ceritakan lebih banyak lagi!"); 
@@ -1479,48 +1716,97 @@
             }
 
             const btn = $('btn-submit-writing');
-            btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Eyang Semar sedang membaca...';
+            btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Eyang Semar sedang memeriksa tulisanmu...';
             btn.disabled = true; 
             lucide.createIcons();
 
             setTimeout(() => {
                 const story = libraryData.find(s => s.id === currentStoryId);
-                const lowercaseText = text.toLowerCase();
+                const cleanStoryContent = story.content.toLowerCase().replace(/<br>/g, ' ').replace(/[.,!?;:()]/g, '');
                 
                 let baseScore = 0, keywordScore = 0, lengthScore = 0, feedback = "";
+                let isPlagiarized = false;
 
-                // Mengecek kata penting dengan mencocokkan tulisan anak dan cerita asli
-                const ignoreWords = ['yang', 'dan', 'di', 'ke', 'dari', 'pada', 'dalam', 'dengan', 'itu', 'ini', 'sebuah', 'seorang', 'mereka', 'ia', 'karena', 'untuk', 'lalu', 'adalah', 'bahwa'];
-                let storyWords = story.content.toLowerCase().replace(/<br>/g, ' ').replace(/[^a-z ]/g, '').split(/\s+/);
+                // 1. PENGECEKAN KEYWORD (Kata Penting)
+                const ignoreWords = ['yang', 'dan', 'di', 'ke', 'dari', 'pada', 'dalam', 'dengan', 'itu', 'ini', 'sebuah', 'seorang', 'mereka', 'ia', 'karena', 'untuk', 'lalu', 'adalah', 'bahwa', 'kemudian', 'akhirnya', 'suatu', 'hari'];
+                let storyWords = cleanStoryContent.split(/\s+/);
+                // Ambil kata yang panjangnya > 4 dan bukan kata sambung umum
                 let uniqueStoryWords = [...new Set(storyWords)].filter(w => w.length > 4 && !ignoreWords.includes(w));
                 
                 let matchedKeywords = 0;
-                let studentWords = [...new Set(lowercaseText.replace(/[^a-z ]/g, '').split(/\s+/))];
-                studentWords.forEach(word => { if (uniqueStoryWords.includes(word)) matchedKeywords++; });
+                let studentWordsArr = cleanText.split(/\s+/);
+                let studentWordsUnique = [...new Set(studentWordsArr)];
+                
+                studentWordsUnique.forEach(word => { 
+                    if (uniqueStoryWords.includes(word)) matchedKeywords++; 
+                });
 
-                // Penilaian
+                // 2. PENGECEKAN PLAGIARISME (Copy-Paste Detection via 4-grams)
+                // Kita memecah cerita asli menjadi potongan 4 kata yang berurutan
+                let storyNgrams = [];
+                for (let i = 0; i < storyWords.length - 3; i++) {
+                    storyNgrams.push(storyWords.slice(i, i + 4).join(" "));
+                }
+
+                // Kita memecah tulisan anak menjadi potongan 4 kata berurutan
+                let studentNgrams = [];
+                for (let i = 0; i < studentWordsArr.length - 3; i++) {
+                    studentNgrams.push(studentWordsArr.slice(i, i + 4).join(" "));
+                }
+
+                // Hitung berapa banyak potongan tulisan anak yang sama persis dengan cerita asli
+                let copiedPhrasesCount = 0;
+                studentNgrams.forEach(ngram => {
+                    if (storyNgrams.includes(ngram)) copiedPhrasesCount++;
+                });
+
+                // Jika lebih dari 20% kalimat yang ditulis anak adalah salinan sama persis
+                let copyRatio = studentNgrams.length > 0 ? (copiedPhrasesCount / studentNgrams.length) : 0;
+                if (copyRatio > 0.20) {
+                    isPlagiarized = true;
+                }
+
+                // 3. PENILAIAN (SKORING)
                 if (matchedKeywords >= 3) {
-                    baseScore = 50; keywordScore = 25; 
-                    feedback = "Wah, tulisanmu bagus sekali! Kamu ingat bagian-bagian penting dari ceritanya.";
-                    if (wordCount >= 30 && matchedKeywords >= 6) {
-                        lengthScore = 25; 
-                        feedback = "Sempurna! Ceritamu sangat lengkap dan panjang. Eyang Semar sangat bangga padamu!";
-                    } else if (wordCount >= 20) {
-                        lengthScore = 15;
-                        feedback = "Bagus! Kamu sudah menceritakannya dengan baik. Lain kali coba ceritakan lebih panjang lagi ya.";
+                    if (isPlagiarized) {
+                        // HUKUMAN: Jika terindikasi copy-paste, skor ditahan di nilai rendah
+                        baseScore = 20; 
+                        keywordScore = 10;
+                        lengthScore = 0;
+                        feedback = "Wah, Eyang Semar melihat kamu hanya menyalin ulang kalimat dari buku! Yuk, coba ceritakan lagi pakai kata-katamu sendiri ya. Eyang yakin kamu pasti bisa!";
+                    } else {
+                        // REWARD: Anak merangkum dengan bahasanya sendiri
+                        baseScore = 50; 
+                        keywordScore = 25; 
+                        
+                        if (wordCount >= 30 && matchedKeywords >= 6) {
+                            lengthScore = 25; 
+                            feedback = "Sempurna! Ceritamu sangat lengkap, panjang, dan kamu menggunakan kata-katamu sendiri. Eyang Semar sangat bangga padamu!";
+                        } else if (wordCount >= 20) {
+                            lengthScore = 15;
+                            feedback = "Bagus! Kamu sudah menceritakannya dengan bahasamu sendiri. Lain kali coba ceritakan lebih panjang lagi ya.";
+                        } else {
+                            feedback = "Kerja bagus! Tapi ceritanya masih sedikit singkat. Ayo kembangkan lagi imajinasimu!";
+                        }
                     }
                 } else {
-                    feedback = "Hmm... sepertinya kamu menceritakan kisah yang berbeda. Coba baca ulang ceritanya pelan-pelan ya.";
+                    feedback = "Hmm... Eyang kurang paham. Sepertinya kamu menceritakan kisah yang berbeda atau terlalu melenceng. Coba baca ulang ceritanya pelan-pelan ya.";
                 }
 
                 let score = Math.min(baseScore + keywordScore + lengthScore, 100);
                 user.exp += score; 
+                
+                let cStory = user.completedStories[currentStoryId];
+                cStory.writingAttempts += 1; // Tambah jumlah percobaan menulis
+                cStory.writingScore = Math.max(cStory.writingScore, score);
+                
+                updateReadStoriesCount(); // Cek kelulusan
                 calculateLevel();
 
                 $('writing-input').style.display = 'none';
                 btn.style.display = 'none';
 
-                let isFail = score === 0;
+                let isFail = score < 50; // Anggap gagal jika skor di bawah 50 (termasuk kena hukuman copy-paste)
 
                 // Tampilan hasil evaluasi tulisan
                 $('writing-result').innerHTML = `
@@ -1536,10 +1822,10 @@
                         <div class="mb-6 bg-white rounded-xl border-2 border-sky-100 py-4 px-6 text-left">
                             <ul class="space-y-4 text-sm font-bold text-slate-600">
                                 <li class="flex justify-between items-center border-b border-slate-50 pb-2">
-                                    <span>Cerita Sesuai Topik</span> <span class="${baseScore>0?'text-sky-500 font-black':'text-slate-300'}">+${baseScore}</span>
+                                    <span>Cerita Sesuai Topik</span> <span class="${baseScore > 20 ? 'text-sky-500 font-black' : (baseScore > 0 ? 'text-amber-500 font-black' : 'text-slate-300')}">+${baseScore}</span>
                                 </li>
                                 <li class="flex justify-between items-center border-b border-slate-50 pb-2">
-                                    <span>Banyak Kata Penting</span> <span class="${keywordScore>0?'text-sky-500 font-black':'text-slate-300'}">+${keywordScore}</span>
+                                    <span>Pemahaman Sendiri</span> <span class="${!isPlagiarized && keywordScore > 0 ? 'text-sky-500 font-black' : (keywordScore > 0 ? 'text-amber-500 font-black' : 'text-slate-300')}">+${keywordScore}</span>
                                 </li>
                                 <li class="flex justify-between items-center">
                                     <span>Panjang Cerita</span> <span class="${lengthScore>0?'text-sky-500 font-black':'text-slate-300'}">+${lengthScore}</span>
@@ -1555,7 +1841,7 @@
                 lucide.createIcons();
                 
                 if(!isFail) { showToast(`Hore! Dapat nilai bagus! +${score} EXP`, "success"); syncDataToSheet(); } 
-                else { showToast(`Yah, ceritanya kurang tepat. Jangan menyerah!`, "error"); }
+                else { showToast(`Yah, nilainya belum maksimal. Coba lagi ya!`, "error"); }
             }, 1500); 
         }
 
