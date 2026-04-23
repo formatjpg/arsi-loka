@@ -5,15 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ARSI-LOKA: Petualangan Literasi Nusantara</title>
     
-    <!-- Memuat alat bantu tampilan (Tailwind) dan ikon (Lucide) dari internet -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        /* Mengatur jenis huruf agar terlihat ramah anak dan tebal */
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
-
-        /* Kumpulan warna yang digunakan di seluruh aplikasi */
         :root {
             --kid-bg: #F0Fdfa; 
             --kid-primary: #0EA5E9; 
@@ -24,8 +20,6 @@
             --radius-card: 1.5rem; 
             --radius-btn: 9999px; 
         }
-
-        /* Pengaturan dasar seluruh halaman web */
         body {
             font-family: 'Nunito', sans-serif;
             background-color: var(--kid-bg);
@@ -33,158 +27,67 @@
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
-
-        /* Gaya tulisan khusus untuk judul utama */
-        .title-fun {
-            font-family: 'Fredoka One', cursive;
-            letter-spacing: 1px;
-        }
-
-        /* Latar belakang dengan motif titik-titik samar */
+        .title-fun { font-family: 'Fredoka One', cursive; letter-spacing: 1px; }
         .bg-pattern {
             position: fixed; inset: 0; z-index: -3;
             background-image: radial-gradient(#bae6fd 2px, transparent 2px);
-            background-size: 30px 30px;
-            opacity: 0.5;
+            background-size: 30px 30px; opacity: 0.5;
         }
-        
-        /* Hiasan bentuk gelembung terbang di latar belakang */
         .blob-shape-1 {
-            position: fixed; top: -10%; left: -10%;
-            width: 40vw; height: 40vw;
-            background-color: #E0F2FE;
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            z-index: -2;
-            animation: blob-float 15s ease-in-out infinite alternate;
+            position: fixed; top: -10%; left: -10%; width: 40vw; height: 40vw;
+            background-color: #E0F2FE; border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            z-index: -2; animation: blob-float 15s ease-in-out infinite alternate;
         }
         .blob-shape-2 {
-            position: fixed; bottom: -10%; right: -10%;
-            width: 30vw; height: 30vw;
-            background-color: #FEF3C7;
-            border-radius: 60% 40% 30% 70% / 50% 40% 60% 50%;
-            z-index: -2;
-            animation: blob-float 20s ease-in-out infinite alternate-reverse;
+            position: fixed; bottom: -10%; right: -10%; width: 30vw; height: 30vw;
+            background-color: #FEF3C7; border-radius: 60% 40% 30% 70% / 50% 40% 60% 50%;
+            z-index: -2; animation: blob-float 20s ease-in-out infinite alternate-reverse;
         }
-
-        /* Gaya kotak kartu putih (seperti kotak kuis/cerita) */
         .kid-panel {
-            background: #FFFFFF;
-            border: 4px solid #E2E8F0; 
-            border-radius: var(--radius-card);
-            box-shadow: 0 8px 0px #E2E8F0; 
-            position: relative;
-            overflow: hidden;
-            transition: all 0.2s ease;
+            background: #FFFFFF; border: 4px solid #E2E8F0; border-radius: var(--radius-card);
+            box-shadow: 0 8px 0px #E2E8F0; position: relative; overflow: hidden; transition: all 0.2s ease;
         }
-        .kid-panel:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 0px #cbd5e1;
-            border-color: #cbd5e1;
-        }
-
-        /* Gaya kotak kepala di bagian atas layar menu */
+        .kid-panel:hover { transform: translateY(-4px); box-shadow: 0 12px 0px #cbd5e1; border-color: #cbd5e1; }
         .header-panel {
-            background: #FFFFFF;
-            border: 4px solid var(--kid-primary);
-            border-radius: var(--radius-card);
-            box-shadow: 0 6px 0px var(--kid-primary);
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 2rem;
+            background: #FFFFFF; border: 4px solid var(--kid-primary); border-radius: var(--radius-card);
+            box-shadow: 0 6px 0px var(--kid-primary); padding: 1.5rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;
         }
-
-        /* === GAYA TOMBOL === */
-        /* Tombol utama biru */
         .btn-kid {
-            background-color: var(--kid-primary);
-            color: #FFFFFF;
-            border-radius: var(--radius-btn);
-            font-weight: 800;
-            padding: 1rem 2rem;
-            border: 3px solid #0284C7; 
-            box-shadow: 0 4px 0px #0284C7;
-            transition: all 0.1s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background-color: var(--kid-primary); color: #FFFFFF; border-radius: var(--radius-btn); font-weight: 800; padding: 1rem 2rem;
+            border: 3px solid #0284C7; box-shadow: 0 4px 0px #0284C7; transition: all 0.1s ease; text-transform: uppercase; letter-spacing: 1px;
         }
         .btn-kid:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0px #0284C7; background-color: #0284C7; border-color: #0369A1; }
         .btn-kid:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0px #0284C7; }
-        
-        /* Tombol aksi oranye */
         .btn-kid-orange {
-            background-color: var(--kid-secondary);
-            color: #FFFFFF;
-            border-radius: var(--radius-btn);
-            font-weight: 800;
-            padding: 1rem 2rem;
-            border: 3px solid #D97706;
-            box-shadow: 0 4px 0px #D97706;
-            transition: all 0.1s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background-color: var(--kid-secondary); color: #FFFFFF; border-radius: var(--radius-btn); font-weight: 800; padding: 1rem 2rem;
+            border: 3px solid #D97706; box-shadow: 0 4px 0px #D97706; transition: all 0.1s ease; text-transform: uppercase; letter-spacing: 1px;
         }
         .btn-kid-orange:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0px #D97706; background-color: #D97706; border-color: #B45309; }
         .btn-kid-orange:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0px #D97706; }
-
-        /* Tombol bergaris luar biru */
         .btn-kid-outline {
-            background-color: #FFFFFF;
-            color: var(--kid-primary);
-            border: 3px solid var(--kid-primary);
-            border-radius: var(--radius-btn);
-            font-weight: 800;
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 0px var(--kid-primary);
-            transition: all 0.1s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background-color: #FFFFFF; color: var(--kid-primary); border: 3px solid var(--kid-primary); border-radius: var(--radius-btn); font-weight: 800; padding: 1rem 2rem;
+            box-shadow: 0 4px 0px var(--kid-primary); transition: all 0.1s ease; text-transform: uppercase; letter-spacing: 1px;
         }
         .btn-kid-outline:hover:not(:disabled) { background-color: #F0F9FF; transform: translateY(-2px); box-shadow: 0 6px 0px var(--kid-primary); }
         .btn-kid-outline:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0px 0px var(--kid-primary); }
-
-        /* Gaya tulisan panjang pada teks cerita */
         .story-text { font-size: 1.15rem; line-height: 1.8; color: #475569; }
         .story-text p { margin-bottom: 1.5rem; text-align: justify; }
-
-        /* Efek pergerakan halus (animasi) */
-        @keyframes blob-float {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-20px) scale(1.05); }
-        }
+        @keyframes blob-float { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-20px) scale(1.05); } }
         @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes morphIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
-        
         .screen-transition { animation: morphIn 0.3s ease-out forwards; }
-        
-        /* Menyembunyikan garis gulir (scrollbar) agar terlihat bersih */
         .scroll-hidden::-webkit-scrollbar { display: none; } .scroll-hidden { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        /* Label penanda berwarna kuning */
         .kid-badge {
-            background: #FEF08A; 
-            color: #CA8A04;
-            font-size: 12px; font-weight: 900;
-            padding: 6px 16px;
-            border-radius: 999px;
-            border: 2px solid #FDE047;
-            text-transform: uppercase;
-            display: inline-block;
-            box-shadow: 0 2px 0px #FDE047;
+            background: #FEF08A; color: #CA8A04; font-size: 12px; font-weight: 900; padding: 6px 16px; border-radius: 999px;
+            border: 2px solid #FDE047; text-transform: uppercase; display: inline-block; box-shadow: 0 2px 0px #FDE047;
         }
     </style>
 </head>
 <body class="min-h-screen pb-12 relative">
 
-    <!-- Hiasan Latar Belakang -->
-    <div class="bg-pattern"></div>
-    <div class="blob-shape-1"></div>
-    <div class="blob-shape-2"></div>
+    <div class="bg-pattern"></div><div class="blob-shape-1"></div><div class="blob-shape-2"></div>
 
-    <!-- BAGIAN 1: Kotak Menu Navigasi di Atas Layar -->
     <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-[1200px] bg-white border-4 border-slate-200 shadow-[0_4px_0px_#e2e8f0] rounded-[2rem] z-50 px-4 py-2 flex justify-between items-center transition-all">
-        <!-- Logo Aplikasi -->
         <div class="flex items-center gap-3 cursor-pointer group" onclick="showScreen('home')">
             <div class="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center border-2 border-sky-400 group-hover:bg-sky-200 transition-colors">
                 <i data-lucide="book" class="w-6 h-6 text-sky-600"></i>
@@ -195,7 +98,6 @@
             </div>
         </div>
         
-        <!-- Pilihan Menu di Tengah (Beranda, Pustaka, Juara, Rapor) -->
         <div class="hidden md:flex items-center gap-6 text-sm font-bold text-slate-500">
             <button onclick="showScreen('home')" class="hover:text-sky-500 transition-colors flex items-center gap-2"><div class="p-2 rounded-full bg-slate-100"><i data-lucide="home" class="w-4 h-4"></i></div> Beranda</button>
             <button onclick="showScreen('library')" class="hover:text-sky-500 transition-colors flex items-center gap-2"><div class="p-2 rounded-full bg-slate-100"><i data-lucide="library" class="w-4 h-4"></i></div> Pustaka</button>
@@ -203,12 +105,9 @@
             <button onclick="showScreen('teacher')" class="hover:text-sky-500 transition-colors flex items-center gap-2"><div class="p-2 rounded-full bg-slate-100"><i data-lucide="layout-dashboard" class="w-4 h-4"></i></div> Rapor</button>
         </div>
         
-        <!-- Informasi Pemain & Tombol Profil di Kanan -->
         <div class="flex items-center gap-3">
             <div class="flex items-center gap-3 bg-slate-50 border-2 border-slate-200 p-1 pr-4 rounded-full cursor-pointer hover:border-sky-300 hover:bg-sky-50 transition-all group" onclick="showScreen('profile')">
-                <div class="w-10 h-10 rounded-full bg-sky-200 flex items-center justify-center text-sky-700 overflow-hidden border-2 border-white shadow-sm" id="nav-avatar">
-                    <i data-lucide="smile" class="w-6 h-6"></i>
-                </div>
+                <div class="w-10 h-10 rounded-full bg-sky-200 flex items-center justify-center text-sky-700 overflow-hidden border-2 border-white shadow-sm" id="nav-avatar"><i data-lucide="smile" class="w-6 h-6"></i></div>
                 <div class="hidden sm:block text-left">
                     <p id="nav-name" class="text-xs font-black text-slate-700 leading-tight truncate max-w-[100px]">Pemain 1</p>
                     <div class="flex items-center gap-1 mt-0.5">
@@ -220,41 +119,29 @@
         </div>
     </nav>
 
-    <!-- Bungkus Konten Halaman yang berganti-ganti -->
     <div class="pt-32 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
 
-        <!-- LAYAR 1: Beranda Utama -->
         <div id="screen-home" class="space-y-12 screen-transition">
             <div class="text-center space-y-6 pt-8 relative max-w-4xl mx-auto">
                 <div class="kid-badge mb-2 transform -rotate-2">Ayo Mulai Petualanganmu! 🚀</div>
                 <h2 class="title-fun text-5xl md:text-6xl text-slate-800 leading-tight">Jelajahi <span class="text-sky-500">Cerita Rakyat</span><br>Nusantara</h2>
-                
                 <div class="kid-panel mt-12 p-8 md:p-12 text-center relative max-w-3xl mx-auto bg-gradient-to-b from-white to-sky-50">
                     <p class="text-base text-slate-600 font-medium leading-relaxed max-w-2xl mx-auto mb-8 text-lg">
-                        Hai, Ksatria Cilik! Membaca itu seru lho! Di sini kamu bisa membaca banyak cerita hebat, menjawab kuis seru, dan menulis ulang ceritanya dengan bahasamu sendiri. 
-                        <br><br>Kumpulkan <b>Skor minimal 80</b> di setiap kuis untuk menjadi Ksatria Pintar!
+                        Hai, Ksatria Cilik! Membaca itu seru lho! Di sini kamu bisa membaca banyak cerita hebat, menjawab kuis seru, dan menulis ulang ceritanya dengan bahasamu sendiri. <br><br>Kumpulkan <b>Skor minimal 80</b> di setiap kuis untuk menjadi Ksatria Pintar!
                     </p>
-                    
                     <div class="flex flex-wrap justify-center gap-4">
-                        <button onclick="showScreen('library')" class="btn-kid flex items-center justify-center gap-2">
-                            <i data-lucide="book-open" class="w-5 h-5"></i> Buka Buku Cerita
-                        </button>
+                        <button onclick="showScreen('library')" class="btn-kid flex items-center justify-center gap-2"><i data-lucide="book-open" class="w-5 h-5"></i> Buka Buku Cerita</button>
                     </div>
-                    
                     <i data-lucide="compass" class="absolute -right-4 -bottom-4 w-32 h-32 text-sky-100 opacity-60 z-[-1] transform -rotate-12"></i>
                     <i data-lucide="star" class="absolute left-8 top-8 w-12 h-12 text-amber-200 opacity-60 z-[-1] fill-amber-200 animate-pulse"></i>
                 </div>
             </div>
         </div>
 
-        <!-- LAYAR 2: Papan Juara -->
         <div id="screen-leaderboard" class="hidden space-y-8 screen-transition max-w-6xl mx-auto">
-            
             <div class="header-panel border-amber-400 shadow-[0_6px_0px_#FBBF24]">
                 <div class="flex items-center gap-4 w-full">
-                    <div class="w-14 h-14 bg-amber-100 rounded-full border-4 border-amber-300 flex items-center justify-center shrink-0">
-                        <i data-lucide="trophy" class="w-7 h-7 text-amber-500"></i>
-                    </div>
+                    <div class="w-14 h-14 bg-amber-100 rounded-full border-4 border-amber-300 flex items-center justify-center shrink-0"><i data-lucide="trophy" class="w-7 h-7 text-amber-500"></i></div>
                     <div class="flex-1">
                         <h2 class="title-fun text-3xl text-slate-800">Papan Juara</h2>
                         <p class="text-sm font-bold text-slate-500 mt-1">Siapa ksatria paling rajin membaca hari ini?</p>
@@ -262,8 +149,6 @@
                 </div>
                 <button onclick="showScreen('home')" class="w-12 h-12 rounded-full border-2 border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
-            
-            <!-- Daftar Peringkat -->
             <div class="flex justify-center" id="leaderboard-grid-wrapper">
                 <div class="kid-panel w-full max-w-2xl p-8 rounded-[2rem] flex flex-col justify-between border-amber-200 shadow-[0_8px_0px_#fde68a]" style="animation: slideUpFade 0.5s ease-out forwards;">
                     <div>
@@ -273,44 +158,30 @@
                                 <h3 class="text-6xl font-black text-slate-800 mt-2">#<span id="rank-sch">?</span> <span class="text-2xl text-slate-400 font-bold">dari <span id="total-sch">0</span></span></h3>
                                 <p class="text-xs font-black text-amber-700 mt-3 bg-amber-100 inline-block px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">SDN 1 Amarta</p>
                             </div>
-                            <div class="w-20 h-20 bg-amber-50 border-4 border-amber-200 rounded-full flex items-center justify-center shadow-sm">
-                                <i data-lucide="users" class="w-10 h-10 text-amber-500"></i>
-                            </div>
+                            <div class="w-20 h-20 bg-amber-50 border-4 border-amber-200 rounded-full flex items-center justify-center shadow-sm"><i data-lucide="users" class="w-10 h-10 text-amber-500"></i></div>
                         </div>
-
                         <div class="mt-8 bg-sky-50 p-6 rounded-2xl border-2 border-sky-100 mb-6">
                             <div class="flex justify-between text-sm font-black mb-3">
-                                <span class="text-sky-700">Tingkat Kehebatanmu</span>
-                                <span class="text-sky-600 bg-white px-3 py-1 rounded-full border border-sky-200 shadow-sm">Top <span id="pct-val">0</span>%</span>
+                                <span class="text-sky-700">Tingkat Kehebatanmu</span><span class="text-sky-600 bg-white px-3 py-1 rounded-full border border-sky-200 shadow-sm">Top <span id="pct-val">0</span>%</span>
                             </div>
-                            <div class="w-full h-4 bg-white rounded-full overflow-hidden border border-sky-200">
-                                <div class="h-full bg-sky-400 transition-all duration-1000 rounded-full" style="width: 0%" id="pct-bar"></div>
-                            </div>
+                            <div class="w-full h-4 bg-white rounded-full overflow-hidden border border-sky-200"><div class="h-full bg-sky-400 transition-all duration-1000 rounded-full" style="width: 0%" id="pct-bar"></div></div>
                             <p class="text-xs text-sky-600 mt-3 font-bold" id="pct-desc">Peringkatmu sedang dihitung...</p>
                         </div>
-                        
-                        <!-- Tempat Ikon Teman Teratas Ditampilkan -->
                         <div class="bg-gradient-to-b from-amber-50 to-white p-6 rounded-2xl border-2 border-amber-100 flex flex-col items-center justify-center min-h-[140px]" id="school-avatar-container">
                             <p class="text-xs text-amber-500 font-bold mb-4">Teman-teman teratas:</p>
                         </div>
                     </div>
-                    
                     <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                        <button onclick="fetchLeaderboardData()" class="btn-kid-outline w-full py-4 flex items-center justify-center gap-2">
-                            <i data-lucide="refresh-cw" class="w-5 h-5"></i> Cek Peringkat Baru
-                        </button>
+                        <button onclick="fetchLeaderboardData()" class="btn-kid-outline w-full py-4 flex items-center justify-center gap-2"><i data-lucide="refresh-cw" class="w-5 h-5"></i> Cek Peringkat Baru</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- LAYAR 3: Rapor Guru -->
         <div id="screen-teacher" class="hidden space-y-8 screen-transition max-w-6xl mx-auto">
             <div class="header-panel border-emerald-400 shadow-[0_6px_0px_#34D399]">
                 <div class="flex items-center gap-4 w-full">
-                    <div class="w-14 h-14 bg-emerald-100 border-4 border-emerald-300 rounded-full flex items-center justify-center shrink-0">
-                        <i data-lucide="layout-dashboard" class="w-6 h-6 text-emerald-600"></i>
-                    </div>
+                    <div class="w-14 h-14 bg-emerald-100 border-4 border-emerald-300 rounded-full flex items-center justify-center shrink-0"><i data-lucide="layout-dashboard" class="w-6 h-6 text-emerald-600"></i></div>
                     <div class="flex-1">
                         <h2 class="title-fun text-3xl text-slate-800">Rapor Kelas</h2>
                         <p class="text-sm font-bold text-slate-500 mt-1">Pantau perkembangan membaca Kelas 4A (SDN 1 Amarta)</p>
@@ -318,7 +189,6 @@
                 </div>
                 <button onclick="showScreen('home')" class="w-12 h-12 rounded-full border-2 border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
-
             <div class="kid-panel p-8 overflow-x-auto border-slate-200 shadow-[0_8px_0px_#e2e8f0]">
                 <div class="flex justify-between items-center mb-8 border-b-2 border-slate-100 pb-6">
                     <h3 class="text-xl font-black text-slate-700 flex items-center gap-2"><i data-lucide="clipboard-list" class="w-6 h-6 text-emerald-500"></i> Daftar Nilai Siswa</h3>
@@ -336,20 +206,15 @@
                             <th class="py-4 text-center rounded-r-xl border-y border-r border-slate-200">Predikat</th>
                         </tr>
                     </thead>
-                    <tbody class="text-sm font-bold text-slate-700" id="teacher-table-body">
-                        <!-- Data Tabel Guru Diisikan Secara Otomatis -->
-                    </tbody>
+                    <tbody class="text-sm font-bold text-slate-700" id="teacher-table-body"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- LAYAR 4: Pustaka (Katalog Cerita) -->
         <div id="screen-library" class="hidden space-y-6 screen-transition">
             <div class="header-panel border-sky-400 shadow-[0_6px_0px_#38BDF8]">
                 <div class="flex items-center gap-4 w-full">
-                    <div class="w-14 h-14 bg-sky-100 border-4 border-sky-300 rounded-full flex items-center justify-center shrink-0">
-                        <i data-lucide="library" class="w-6 h-6 text-sky-600"></i>
-                    </div>
+                    <div class="w-14 h-14 bg-sky-100 border-4 border-sky-300 rounded-full flex items-center justify-center shrink-0"><i data-lucide="library" class="w-6 h-6 text-sky-600"></i></div>
                     <div class="flex-1">
                         <h2 class="title-fun text-3xl text-slate-800">Perpustakaan Loka</h2>
                         <p class="text-sm font-bold text-slate-500 mt-1">Pilih cerita mana yang ingin kamu baca hari ini?</p>
@@ -357,18 +222,11 @@
                 </div>
                 <button onclick="showScreen('home')" class="w-12 h-12 rounded-full border-2 border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
-            
-            <!-- Tombol Pemilah Wilayah Pulau -->
             <div id="library-tabs" class="flex flex-wrap justify-center gap-3 mt-4 mb-6"></div>
-
-            <!-- Daftar Kartu Cerita -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2" id="library-grid"></div>
         </div>
 
-        <!-- LAYAR 5: Membaca Cerita & Misi Kuis -->
         <div id="screen-reader" class="hidden space-y-6 screen-transition max-w-4xl mx-auto">
-            
-            <!-- Judul Cerita Saat Dibaca -->
             <div class="bg-white border-4 border-slate-200 rounded-[2rem] p-4 flex justify-between items-center z-20 sticky top-24 shadow-sm mb-6">
                 <button onclick="closeReader()" class="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-sky-500 transition-colors bg-slate-50 px-4 py-2 rounded-full border-2 border-transparent hover:border-sky-200">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i> Tutup Buku
@@ -383,26 +241,20 @@
                 <div class="w-24"></div> 
             </div>
 
-            <!-- Gambar Pemanis Cerita -->
             <div class="kid-panel overflow-hidden relative h-64 md:h-80 w-full group p-0 rounded-[2rem] border-slate-200 shadow-[0_8px_0px_#e2e8f0]" id="reader-illustration"></div>
 
-            <!-- Pemutar Suara Cerita (Audio) -->
             <div class="bg-sky-500 rounded-full p-3 flex items-center gap-4 shadow-[0_6px_0px_#0284c7] border-4 border-sky-600 mt-6">
                 <button id="btn-toggle-audio" onclick="toggleStoryAudio()" class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-sky-500 hover:bg-sky-50 transition-colors border-2 border-sky-200 shadow-sm shrink-0">
                     <i id="audio-icon" data-lucide="play" class="w-6 h-6 ml-1"></i>
                 </button>
                 <div class="flex-grow flex flex-col gap-2 pr-4">
-                    <div class="flex justify-between text-[11px] font-black uppercase text-white tracking-wide">
-                        <span>Dengarkan Cerita (Audio)</span>
-                        <span id="audio-timer">00:00 / 00:00</span>
-                    </div>
+                    <div class="flex justify-between text-[11px] font-black uppercase text-white tracking-wide"><span>Dengarkan Cerita (Audio)</span><span id="audio-timer">00:00 / 00:00</span></div>
                     <div id="audio-progress-track" onclick="seekStoryAudio(event)" class="progress-track bg-sky-700 h-3 rounded-full overflow-hidden border border-sky-800 cursor-pointer">
                         <div id="audio-progress-fill" class="progress-fill bg-amber-400 h-full w-[0%] rounded-full shadow-[inset_0_-2px_0_rgba(0,0,0,0.2)] transition-all duration-100 ease-linear pointer-events-none"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Isi Teks Cerita Panjang -->
             <div class="kid-panel p-8 md:p-12 mt-6 border-slate-200 shadow-[0_8px_0px_#e2e8f0]">
                 <div id="reader-content" class="story-text text-lg"></div>
                 
@@ -412,67 +264,48 @@
                         <p class="text-sm text-slate-500 font-bold mt-2">Buktikan kalau kamu sudah paham ceritanya dengan misi ini.</p>
                     </div>
                     
-                    <!-- Kotak Eksekusi Kuis -->
                     <div class="bg-indigo-50 border-4 border-indigo-100 p-8 rounded-[2rem] flex flex-col justify-between hover:border-indigo-300 transition-colors mx-auto max-w-lg w-full text-center mb-4">
                         <div class="flex flex-col items-center">
                             <div class="w-16 h-16 bg-indigo-200 text-indigo-600 rounded-full flex items-center justify-center mb-4 border-4 border-white shadow-sm"><i data-lucide="brain" class="w-8 h-8"></i></div>
                             <h5 class="text-xl font-black text-indigo-900 mb-2">Kuis Pemahaman</h5>
                             <p class="text-sm text-indigo-700 leading-relaxed mb-6 font-medium">Uji ingatanmu dengan menjawab 5 pertanyaan seru dari cerita ini.</p>
                         </div>
-                        <button id="btn-start-quiz" onclick="startQuiz()" class="btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600 hover:border-indigo-800 text-lg">
-                            Mulai Kuis
-                        </button>
+                        <button id="btn-start-quiz" onclick="startQuiz()" class="btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600 hover:border-indigo-800 text-lg">Mulai Kuis</button>
                         <p id="quiz-status-text" class="text-center text-[11px] font-black mt-4 text-indigo-500 uppercase hidden"></p>
                     </div>
 
-                    <!-- Kotak Tantangan Menulis -->
                     <div class="bg-amber-50 border-4 border-amber-200 p-6 md:p-8 rounded-[2rem] mt-4 relative overflow-hidden">
                         <div class="flex items-center gap-4 mb-4">
                             <div class="w-12 h-12 bg-amber-200 text-amber-600 rounded-full flex items-center justify-center border-2 border-white shadow-sm"><i data-lucide="pen-tool" class="w-6 h-6"></i></div>
                             <h5 class="text-xl font-black text-amber-900">Tantangan Menulis</h5>
                         </div>
-                        <p class="text-sm text-amber-700 mb-6 font-medium">
-                            Sekarang giliranmu! Ceritakan ulang kisah yang baru kamu baca menggunakan bahasamu sendiri. Eyang Semar (Sistem) akan mengeceknya!
-                        </p>
+                        <p class="text-sm text-amber-700 mb-6 font-medium">Sekarang giliranmu! Ceritakan ulang kisah yang baru kamu baca menggunakan bahasamu sendiri. Eyang Semar (Sistem) akan mengeceknya!</p>
                         <textarea id="writing-input" rows="5" class="w-full bg-white border-2 border-amber-200 rounded-2xl p-5 text-base focus:outline-none focus:border-amber-400 resize-none font-medium text-slate-700 shadow-inner" placeholder="Pada suatu hari..."></textarea>
-                        
                         <div id="writing-result" class="mt-4"></div>
-
-                        <button id="btn-submit-writing" onclick="submitWriting()" class="btn-kid-orange w-full mt-6 flex justify-center items-center gap-2 text-base">
-                            <i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai
-                        </button>
+                        <button id="btn-submit-writing" onclick="submitWriting()" class="btn-kid-orange w-full mt-6 flex justify-center items-center gap-2 text-base"><i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai</button>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- SEMBULAN (MODAL) PROFIL PEMAIN -->
     <div id="screen-profile" class="hidden fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center p-4 transition-opacity duration-300 opacity-0">
         <div class="bg-white border-4 border-slate-200 w-full max-w-2xl p-8 relative transform transition-transform duration-300 scale-95 flex flex-col max-h-[90vh] overflow-y-auto rounded-[2rem] shadow-2xl" id="profile-content">
-            
             <button onclick="closeModal('screen-profile')" class="absolute top-6 right-6 w-10 h-10 rounded-full border-2 border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all z-30"><i data-lucide="x" class="w-5 h-5"></i></button>
-
-            <div class="text-center w-full">
-                <div class="kid-badge bg-sky-400 border-sky-500 shadow-[0_4px_0_#0284c7] text-white text-sm px-6 py-2 inline-block -mt-4 mb-4 relative z-20">Buku Profil Ksatria</div>
-            </div>
+            <div class="text-center w-full"><div class="kid-badge bg-sky-400 border-sky-500 shadow-[0_4px_0_#0284c7] text-white text-sm px-6 py-2 inline-block -mt-4 mb-4 relative z-20">Buku Profil Ksatria</div></div>
             
             <div class="w-full pt-4 pb-2">
                 <div class="flex flex-col md:flex-row gap-6 items-center justify-center mb-8 bg-sky-50 p-6 border-4 border-sky-100 rounded-[2rem] relative overflow-hidden">
                     <div id="prof-avatar-main" class="w-32 h-32 md:w-36 md:h-36 bg-white rounded-full border-4 border-sky-300 flex items-center justify-center p-4 relative z-10 shrink-0 shadow-sm mx-auto md:mx-0"></div>
-                    
                     <div class="flex-grow space-y-4 w-full relative z-10 text-center md:text-left">
                         <div class="bg-white p-4 rounded-xl border-2 border-sky-100 shadow-sm flex flex-col items-center md:items-start">
                             <label class="text-[10px] font-black text-sky-500 uppercase tracking-widest mb-1 ml-1">Nama Panggilan</label>
                             <input id="input-username" type="text" value="Satria Amarta" class="bg-transparent text-xl font-black text-slate-800 focus:outline-none w-full text-center md:text-left focus:border-b-2 focus:border-sky-300 pb-1 transition-all">
                         </div>
-                        
                         <div class="bg-white p-4 rounded-xl border-2 border-rose-100 shadow-sm flex flex-col items-center md:items-start">
                             <label class="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1 ml-1">Kata Sandi (PIN)</label>
                             <input id="input-password" type="password" placeholder="Contoh: 1234" class="bg-transparent text-xl font-black text-slate-800 focus:outline-none w-full text-center md:text-left focus:border-b-2 focus:border-rose-300 pb-1 transition-all">
                         </div>
-                        
                         <div class="bg-white p-5 rounded-xl border-2 border-sky-100 shadow-sm w-full">
                             <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-3 sm:gap-0 mb-3">
                                 <div class="text-center sm:text-left">
@@ -481,315 +314,57 @@
                                 </div>
                                 <p class="text-sm font-black text-amber-500 bg-amber-50 px-3 py-1 rounded-full border border-amber-200"><span id="prof-exp">0</span> EXP</p>
                             </div>
-                            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                                <div id="prof-exp-bar" class="h-full bg-gradient-to-r from-amber-400 to-orange-400 transition-all duration-700 rounded-full" style="width: 0%"></div>
-                            </div>
+                            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200"><div id="prof-exp-bar" class="h-full bg-gradient-to-r from-amber-400 to-orange-400 transition-all duration-700 rounded-full" style="width: 0%"></div></div>
                         </div>
                     </div>
                 </div>
-
                 <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest text-center mb-4">Pilih Avatar Ikon</p>
                 <div id="prof-char-list" class="flex flex-wrap justify-center gap-3 max-h-32 overflow-y-auto scroll-hidden p-4 bg-white border-2 border-slate-100 rounded-2xl shadow-inner"></div>
-
-                <button onclick="saveUserProfile()" class="btn-kid w-full mt-8 py-4 text-base flex justify-center items-center gap-2">
-                    <i data-lucide="save" class="w-5 h-5"></i> Simpan Profil
-                </button>
+                <button onclick="saveUserProfile()" class="btn-kid w-full mt-8 py-4 text-base flex justify-center items-center gap-2"><i data-lucide="save" class="w-5 h-5"></i> Simpan Profil</button>
             </div>
         </div>
     </div>
 
-    <!-- SEMBULAN (MODAL) SAAT KUIS BERLANGSUNG -->
     <div id="screen-quiz" class="hidden fixed inset-0 z-[150] bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-500">
         <div class="bg-white w-full max-w-3xl p-8 md:p-12 text-center relative transform transition-transform duration-300 scale-95 flex flex-col max-h-[90vh] rounded-[2rem] overflow-y-auto scroll-hidden border-4 border-indigo-200 shadow-2xl" id="quiz-content">
-            
             <button onclick="closeModal('screen-quiz')" class="absolute top-6 right-6 w-10 h-10 rounded-full border-2 border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-all z-30"><i data-lucide="x" class="w-5 h-5"></i></button>
-
-            <div class="text-center w-full">
-                <div class="kid-badge bg-indigo-400 border-indigo-500 shadow-[0_4px_0_#4338ca] text-white text-sm px-6 py-2 inline-block -mt-4 mb-8 relative z-20">Kuis Seru!</div>
-            </div>
-            
+            <div class="text-center w-full"><div class="kid-badge bg-indigo-400 border-indigo-500 shadow-[0_4px_0_#4338ca] text-white text-sm px-6 py-2 inline-block -mt-4 mb-8 relative z-20">Kuis Seru!</div></div>
             <div class="w-full pt-2 pb-2">
-                <div class="inline-block bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-100 mb-6">
-                    <p id="quiz-progress-text" class="text-[11px] font-black text-indigo-500 uppercase tracking-widest">Pertanyaan 1 dari 5</p>
-                </div>
-                
+                <div class="inline-block bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-100 mb-6"><p id="quiz-progress-text" class="text-[11px] font-black text-indigo-500 uppercase tracking-widest">Pertanyaan 1 dari 5</p></div>
                 <h3 id="quiz-question" class="text-xl md:text-3xl font-black leading-relaxed mb-10 text-slate-800 px-4">Pertanyaan akan muncul di sini...</h3>
-
               <div id="quiz-options" class="grid grid-cols-1 gap-3 mb-6"></div>
             </div>
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- BAGIAN KODE LOGIKA JAVASCRIPT -->
-    <!-- ========================================== -->
     <script>
-        // Alias pendek untuk memanggil elemen HTML berdasarkan ID (agar kode tidak panjang)
         const $ = (id) => document.getElementById(id);
-
-        // ==========================================
-        // EFEK SUARA & MUSIK LATAR (BGM)
-        // ==========================================
-        // BGM Ceria dipasang dengan volume sangat kecil (5%) agar fokus membaca tidak terganggu
-        const bgm = new Audio('./bgm_joyfull.mp3'); 
-        bgm.loop = true; 
-        bgm.volume = 0.05; 
-        
-        // Memuat efek suara klik, jawaban benar, dan jawaban salah
-        const soundClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); 
-        soundClick.volume = 0.2;
-        const soundCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3'); 
-        soundCorrect.volume = 0.4;
-        const soundWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3'); 
-        soundWrong.volume = 0.3;
+        const bgm = new Audio('./bgm_joyfull.mp3'); bgm.loop = true; bgm.volume = 0.05; 
+        const soundClick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); soundClick.volume = 0.2;
+        const soundCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3'); soundCorrect.volume = 0.4;
+        const soundWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/2997/2997-preview.mp3'); soundWrong.volume = 0.3;
         
         let isBgmPlaying = false;
-        
-        // Menjalankan musik latar secara otomatis saat layar disentuh/diklik pertama kali
         document.addEventListener('click', function(event) {
-            if (!isBgmPlaying) {
-                bgm.play().catch(err => console.log("Menunggu interaksi pengguna..."));
-                isBgmPlaying = true;
-            }
-            // Jika yang diklik adalah sebuah tombol, mainkan efek suara klik
+            if (!isBgmPlaying) { bgm.play().catch(err => console.log("Menunggu...")); isBgmPlaying = true; }
             const clickableElement = event.target.closest('button, .cursor-pointer, [onclick]');
-            if (clickableElement) {
-                soundClick.currentTime = 0; 
-                soundClick.play().catch(err => {});
-            }
+            if (clickableElement) { soundClick.currentTime = 0; soundClick.play().catch(err => {}); }
         });
 
-        // ==========================================
-        // PENGATURAN INTEGRASI DATABASE (GOOGLE SHEETS)
-        // ==========================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwudlU29ENzbWGAj0ibAG9TEHdYHRrNTtAFMhU9P-aLlbLNpumekVfIu9BKke4zXdk0/exec"; 
 
-        // Fungsi untuk mengambil daftar nilai teman-teman dari Google Sheets
-        async function fetchLeaderboardData() {
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
-                if (!response.ok) throw new Error('Gagal mengambil data.');
-                const data = await response.json();
-                
-                // Menyamakan format data yang datang agar rapi
-                const normalizedData = data.map(item => ({
-                    nama: (item.Nama || item.nama || "").trim(),
-                    pin: (item.Pin || item.pin || "").toString().trim(), // <--- BACA PIN DARI SERVER
-                    sekolah: item.Sekolah || item.sekolah || "SDN 1 Amarta",
-                    level: parseInt(item.Level || item.level || 1),
-                    exp: parseInt(item.Exp || item.exp || item.EXP || 0),
-                    avgScore: parseInt(item.AvgScore || item.avgScore || item.avgscore || 0),
-                    readStories: parseInt(item.ReadStories || item.readStories || item.readstories || 0),
-                    avgTime: parseInt(item.AvgTime || item.avgTime || item.avgtime || 0)
-                }));
-
-                // Memasukkan juga nilai pemain yang sedang aktif ke dalam daftar
-                const userIndex = normalizedData.findIndex(s => s.nama === user.name);
-                
-                let totalScore = 0, totalCount = 0;
-                Object.values(user.completedStories).forEach(st => { 
-                    // PERBAIKAN: Gunakan quizScore, bukan score
-                    if (st.quizScore !== undefined) { totalScore += st.quizScore; totalCount++; } 
-                });
-                
-                // Gunakan nilai cadangan dari server jika memori lokal kosong
-                const localAvgScore = totalCount > 0 ? Math.round(totalScore / totalCount) : (user.serverAvgScore || 0);
-                const localTotalTime = user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / 60) : (user.serverTotalTime || 0);
-                
-                const currentUserData = {
-                    nama: user.name,
-                    sekolah: "SDN 1 Amarta",
-                    level: user.level,
-                    exp: user.exp,
-                    avgScore: localAvgScore,
-                    readStories: user.readStories,
-                    avgTime: localTotalTime
-                };
-
-                if(userIndex !== -1) {
-                    normalizedData[userIndex] = currentUserData;
-                } else {
-                    normalizedData.push(currentUserData);
-                }
-
-                return normalizedData;
-            } catch (error) {
-                console.error("Error fetching leaderboard:", error);
-                showToast("Duh, gagal mengambil data dari buku catatan.", "error");
-                return []; 
-            }
-        }
-
-        // Fungsi untuk mengirim data nilai pemain ke buku catatan guru (Google Sheets) melalui internet
-        async function syncDataToSheet() {
-            // Jangan simpan ke lemari jika masih akun Guest
-            if (user.name === "Satria Amarta") return;
-
-            // Update Lemari Arsip Lokal
-            let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
-            localDB[user.name.toLowerCase()] = user;
-            localStorage.setItem('arsiLokaProfiles', JSON.stringify(localDB));
-
-            if (!GOOGLE_SCRIPT_URL) return;
-
-            // CEGAH OVERWRITE DATA 0: Jika EXP 0 padahal sudah pernah baca buku/punya nilai, jangan kirim!
-            if (user.exp === 0 && (user.serverAvgScore > 0 || user.readStories > 0)) return;
-
-            let totalScore = 0, validQuizCount = 0;
-            Object.values(user.completedStories).forEach(st => { 
-                if (st.quizAttempts > 0) { totalScore += (st.quizScore || 0); validQuizCount++; } 
-            });
-            
-            const payload = {
-                oldName: user.originalName, 
-                nama: user.name,
-                pin: user.pin,
-                sekolah: "SDN 1 Amarta", 
-                level: user.level, exp: user.exp,
-                avgScore: validQuizCount > 0 ? Math.round(totalScore / validQuizCount) : (user.serverAvgScore || 0),
-                readStories: user.readStories, 
-                avgTime: user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / 60) : (user.serverTotalTime || 0)
-            };
-
-            try {
-                fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            } catch (e) { console.error(e); }
-        }
-
-        // Fungsi untuk menampilkan papan juara berdasarkan skor
-        async function updateLeaderboardUI() {
-            const data = await fetchLeaderboardData();
-            if (data.length === 0) return; 
-
-            // Mengurutkan siswa berdasarkan total EXP tertinggi dari sekolah SDN 1 Amarta
-            // Pastikan perbandingan menggunakan angka (Number)
-            const schoolRank = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a, b) => Number(b.exp) - Number(a.exp));
-            
-            // Mencari urutan peringkat user yang sedang bermain
-            const userSchoolRank = schoolRank.findIndex(s => s.nama.toLowerCase() === user.name.toLowerCase()) + 1;
-            const totalSchool = schoolRank.length;
-            
-            // Menghitung persentil kehebatan untuk progress bar
-            let percentile = 0;
-            if (userSchoolRank > 0 && totalSchool > 1) {
-               percentile = Math.round(((totalSchool - userSchoolRank) / totalSchool) * 100);
-            }
-
-            // Memperbarui teks nomor peringkat dan total siswa
-            const rankTextEl = $('rank-sch');
-            const totalTextEl = $('total-sch');
-            if(rankTextEl) rankTextEl.innerText = userSchoolRank > 0 ? userSchoolRank : '?';
-            if(totalTextEl) totalTextEl.innerText = totalSchool;
-
-            // Memperbarui progress bar persentil
-            const pctValEl = $('pct-val');
-            const pctBarEl = $('pct-bar');
-            const pctDescEl = $('pct-desc');
-            
-            if(pctValEl) pctValEl.innerText = (100 - percentile);
-            if(pctBarEl) pctBarEl.style.width = `${percentile}%`;
-            if(pctDescEl) pctDescEl.innerText = `Wow! Kamu lebih hebat dari ${percentile}% teman satu sekolahmu!`;
-            
-            // Menyuntikkan lingkaran inisial teman ke dalam wadah (container)
-            const avatarContainer = $('school-avatar-container');
-            if (avatarContainer) {
-                let avatarHtml = '<p class="text-xs text-amber-500 font-bold mb-4">Teman-teman teratas:</p><div class="flex -space-x-3">';
-                
-                // Menampilkan 3 peringkat teratas
-                for(let i=0; i<Math.min(3, schoolRank.length); i++){
-                    let isMe = schoolRank[i].nama === user.name;
-                    if(isMe){
-                         avatarHtml += `<div class="w-16 h-16 rounded-full bg-sky-500 flex items-center justify-center text-xs font-black text-white shadow-md z-${30-i*10} scale-110 border-4 border-white" title="${schoolRank[i].nama}">Kamu</div>`;
-                    } else {
-                         avatarHtml += `<div class="w-16 h-16 rounded-full bg-slate-200 flex items-center justify-center text-sm font-black text-slate-600 shadow-md z-${30-i*10} border-4 border-white" title="${schoolRank[i].nama}">${schoolRank[i].nama.substring(0,3).toUpperCase()}</div>`;
-                    }
-                }
-                
-                // Jika user yang bermain bukan di peringkat 1, 2, atau 3, tampilkan posisinya terpisah di ujung kanan
-                if(userSchoolRank > 3) {
-                     avatarHtml += `<div class="w-16 h-16 rounded-full bg-sky-500 flex items-center justify-center text-xs font-black text-white shadow-md z-0 scale-110 ml-6 border-4 border-white" title="${user.name}">Kamu</div>`;
-                }
-                
-                avatarHtml += '</div>';
-                avatarContainer.innerHTML = avatarHtml;
-            }
-
-            lucide.createIcons();
-        }
-
-       // Fungsi untuk mengambil data agar guru bisa melihat rapor seluruh siswa
-        async function renderTeacherTableFull() {
-            const tbody = $('teacher-table-body');
-            tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Membuka buku catatan...</td></tr>';
-            lucide.createIcons();
-
-            const data = await fetchLeaderboardData();
-            
-            // --- PERBAIKAN: Ubah b.avgScore - a.avgScore menjadi b.exp - a.exp ---
-            const schoolData = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a,b) => b.exp - a.exp);
-            // ---------------------------------------------------------------------
-
-            if (schoolData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm">Belum ada siswa yang bermain.</td></tr>';
-                return;
-            }
-
-            let html = '';
-            schoolData.forEach((student, index) => {
-                let status = "Ayo Belajar Lagi!";
-                if (student.avgScore >= 80) status = "Hebat Sekali!";
-                else if (student.avgScore >= 60) status = "Sudah Bagus";
-
-                let statusClass = status === 'Hebat Sekali!' ? 'text-emerald-700 bg-emerald-100 border-emerald-200' : 
-                                 (status === 'Sudah Bagus' ? 'text-sky-700 bg-sky-100 border-sky-200' : 'text-amber-700 bg-amber-100 border-amber-200');
-
-                let isMe = student.nama === user.name;
-                let rowClass = isMe ? 'bg-sky-50 border-l-4 border-l-sky-500' : 'bg-white border-b border-slate-100 hover:bg-slate-50';
-                let iconStr = isMe ? '<i data-lucide="smile" class="w-5 h-5 text-sky-500 fill-sky-200"></i> ' : '<span class="text-slate-300 w-5 inline-block text-center font-black">' + (index+1) + '</span>';
-
-                html += `
-                    <tr class="${rowClass} transition-colors">
-                        <td class="py-4 pl-4 font-bold text-slate-700 flex items-center gap-3">${iconStr}${student.nama} ${isMe ? '<span class="text-[10px] text-sky-500 bg-white border border-sky-200 px-2 py-0.5 rounded-full uppercase">Kamu</span>' : ''}</td>
-                        <td class="py-4 text-center text-sm font-bold text-slate-500">${student.readStories || 0} Buku</td>
-                        <td class="py-4 text-center font-black text-xl text-sky-500">${student.avgScore}</td>
-                        <td class="py-4 text-center text-xs font-bold text-slate-400">${student.avgTime || 0} Menit</td>
-                        <td class="py-4 text-center"><span class="px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${statusClass}">${status}</span></td>
-                    </tr>
-                `;
-            });
-
-            tbody.innerHTML = html;
-            lucide.createIcons();
-        }
-
-        // ==========================================
-        // KOLEKSI CERITA RAKYAT DAN PERTANYAAN KUIS
-        // ==========================================
-        
-        // Aturan tampilan warna dan ikon untuk masing-masing cerita
         const getStoryIconStyle = (storyId) => {
             const styles = {
-                'j1': { icon: 'leaf', color: 'from-emerald-300 to-emerald-500 text-emerald-100' }, 
-                'j2': { icon: 'mountain', color: 'from-orange-300 to-orange-500 text-orange-100' }, 
-                'j3': { icon: 'book', color: 'from-amber-300 to-amber-500 text-amber-100' }, 
-                's1': { icon: 'droplet', color: 'from-sky-300 to-sky-500 text-sky-100' }, 
-                's2': { icon: 'flower-2', color: 'from-pink-300 to-pink-500 text-pink-100' }, 
-                's3': { icon: 'ship', color: 'from-indigo-300 to-indigo-500 text-indigo-100' }, 
-                'su1': { icon: 'smile', color: 'from-yellow-300 to-yellow-500 text-yellow-100' }, 
-                'su2': { icon: 'swords', color: 'from-red-300 to-red-500 text-red-100' }, 
-                'su3': { icon: 'shield', color: 'from-purple-300 to-purple-500 text-purple-100' }, 
-                'k1': { icon: 'fish', color: 'from-cyan-300 to-cyan-500 text-cyan-100' }, 
-                'k2': { icon: 'cloud-rain', color: 'from-slate-300 to-slate-500 text-slate-100' }, 
-                'k3': { icon: 'tent-tree', color: 'from-teal-300 to-teal-500 text-teal-100' }, 
-                'p1': { icon: 'bird', color: 'from-rose-300 to-rose-500 text-rose-100' }, 
-                'p2': { icon: 'egg', color: 'from-fuchsia-300 to-fuchsia-500 text-fuchsia-100' }, 
-                'p3': { icon: 'waves', color: 'from-blue-300 to-blue-500 text-blue-100' } 
+                'j1': { icon: 'leaf', color: 'from-emerald-300 to-emerald-500 text-emerald-100' }, 'j2': { icon: 'mountain', color: 'from-orange-300 to-orange-500 text-orange-100' }, 'j3': { icon: 'book', color: 'from-amber-300 to-amber-500 text-amber-100' }, 
+                's1': { icon: 'droplet', color: 'from-sky-300 to-sky-500 text-sky-100' }, 's2': { icon: 'flower-2', color: 'from-pink-300 to-pink-500 text-pink-100' }, 's3': { icon: 'ship', color: 'from-indigo-300 to-indigo-500 text-indigo-100' }, 
+                'su1': { icon: 'smile', color: 'from-yellow-300 to-yellow-500 text-yellow-100' }, 'su2': { icon: 'swords', color: 'from-red-300 to-red-500 text-red-100' }, 'su3': { icon: 'shield', color: 'from-purple-300 to-purple-500 text-purple-100' }, 
+                'k1': { icon: 'fish', color: 'from-cyan-300 to-cyan-500 text-cyan-100' }, 'k2': { icon: 'cloud-rain', color: 'from-slate-300 to-slate-500 text-slate-100' }, 'k3': { icon: 'tent-tree', color: 'from-teal-300 to-teal-500 text-teal-100' }, 
+                'p1': { icon: 'bird', color: 'from-rose-300 to-rose-500 text-rose-100' }, 'p2': { icon: 'egg', color: 'from-fuchsia-300 to-fuchsia-500 text-fuchsia-100' }, 'p3': { icon: 'waves', color: 'from-blue-300 to-blue-500 text-blue-100' } 
             };
             return styles[storyId] || { icon: 'file-text', color: 'from-slate-300 to-slate-500 text-slate-100' };
         };
 
         const libraryData = [
-            // JAWA
             { id: 'j1', region: 'Jawa', diff: 'Mudah', title: 'Timun Emas (Jawa Tengah)', audioUrl: './timun_emas.wav', desc: 'Gadis cerdas dan baik hati melawan raksasa dengan bekal ajaib dari pertapa.', content: `Pada zaman dahulu, hiduplah seorang janda tua bernama Mbok Srini. Ia tinggal seorang diri di sebuah desa dan sangat menginginkan seorang anak. Setiap hari ia berdoa agar diberikan keturunan. Suatu hari, datanglah seorang raksasa yang menakutkan. Raksasa itu berkata bahwa ia bisa memberi Mbok Srini seorang anak, tetapi dengan syarat: ketika anak itu sudah dewasa, harus diserahkan kepadanya untuk dimakan. Karena sangat ingin memiliki anak, Mbok Srini pun menyetujui syarat tersebut.<br><br>Raksasa lalu memberikan sebuah biji mentimun. Mbok Srini menanam biji itu di pekarangannya. Beberapa waktu kemudian, tumbuhlah sebuah mentimun emas yang sangat besar dan berkilau. Ketika dibelah, ternyata di dalamnya ada seorang bayi perempuan yang cantik. Mbok Srini menamainya Timun Emas. Tahun demi tahun berlalu, Timun Emas tumbuh menjadi gadis yang cerdas dan baik hati. Namun, Mbok Srini mulai gelisah karena teringat janjinya kepada raksasa. Hingga suatu hari, raksasa datang untuk menagih janji tersebut. Mbok Srini tidak ingin kehilangan Timun Emas. Ia kemudian meminta bantuan seorang pertapa sakti. Pertapa itu memberikan empat benda ajaib kepada Timun Emas: biji mentimun, jarum, garam, dan terasi. Ia juga berpesan agar benda-benda itu digunakan saat dikejar raksasa.<br><br>Keesokan harinya, raksasa kembali datang. Mbok Srini menyuruh Timun Emas melarikan diri. Raksasa pun mengejarnya dengan langkah besar dan cepat. Saat raksasa hampir menangkapnya, Timun Emas melemparkan biji mentimun. Seketika tumbuhlah hutan mentimun yang lebat, tetapi raksasa berhasil melewatinya. Kemudian Timun Emas melemparkan jarum, yang berubah menjadi hutan bambu runcing. Raksasa terluka, namun tetap mengejar. Timun Emas lalu menaburkan garam, yang berubah menjadi lautan luas. Dengan susah payah, raksasa berhasil menyeberanginya. Terakhir, Timun Emas melemparkan terasi. Seketika berubah menjadi lautan lumpur yang sangat dalam dan lengket. Raksasa terperosok dan tidak bisa keluar. Ia akhirnya tenggelam dan tidak pernah kembali lagi. Timun Emas pun selamat dan kembali ke rumah. Mbok Srini sangat bahagia dan mereka hidup bersama dengan damai.<br><br>Cerita ini mengajarkan bahwa kita harus berani menghadapi masalah, selalu berusaha, dan tidak mudah menyerah. Selain itu, janji harus dipikirkan dengan bijak sebelum diucapkan.`, 
               questions: [
                 { q: "Siapakah nama wanita yang memberikan 4 benda ajaib kepada Timun Emas?", a: ["Mbok Srini", "Raksasa", "Pertapa sakti", "Dayang Sumbi"], c: 2, exp: "Mbok Srini meminta bantuan seorang pertapa sakti, dan pertapa itulah yang memberikan empat benda ajaib kepada Timun Emas." },
@@ -818,7 +393,6 @@
               ]
             },
 
-            // SUMATRA
             { id: 's1', region: 'Sumatra', diff: 'Mudah', title: 'Legenda Danau Toba (Sumut)', audioUrl: './legenda_danau_toba.wav', desc: 'Janji yang dilanggar memicu bencana besar.', content: `Pada zaman dahulu di daerah Sumatra Utara, hiduplah seorang pemuda bernama Toba yang bekerja sebagai nelayan. Suatu hari, ia berhasil menangkap seekor ikan yang sangat indah. Ketika akan dimasak, ikan itu berubah menjadi seorang perempuan cantik. Perempuan tersebut bersedia menjadi istri Toba dengan satu syarat, yaitu Toba tidak boleh menceritakan asal-usulnya kepada siapa pun. Toba menyetujuinya, dan mereka hidup bahagia serta dikaruniai seorang anak bernama Samosir.<br><br>Seiring waktu, Samosir tumbuh menjadi anak yang nakal dan sering membuat ibunya kesal. Suatu hari, Samosir diminta mengantarkan makanan untuk ayahnya di ladang, tetapi ia malah memakannya di jalan. Toba yang sedang lapar menjadi sangat marah dan tanpa sengaja mengucapkan bahwa Samosir adalah "anak ikan". Samosir pun menangis dan mengadu kepada ibunya. Sang ibu merasa sedih karena Toba telah melanggar janji, lalu ia menyuruh Samosir naik ke tempat tinggi.<br><br>Tak lama kemudian, hujan deras turun dan air meluap dari dalam tanah hingga membentuk sebuah danau yang sangat luas, yang kini dikenal sebagai Danau Toba. Pulau di tengah danau tersebut dipercaya sebagai Pulau Samosir.<br><br>Cerita ini mengajarkan pentingnya menepati janji dan mengendalikan emosi.`, 
               questions: [
                 { q: "Apa pekerjaan Toba sebelum menikah?", a: ["Petani", "Pemburu", "Nelayan", "Pedagang"], c: 2, exp: "Di awal teks disebutkan bahwa Toba bekerja sebagai nelayan." },
@@ -847,7 +421,6 @@
               ]
             },
 
-            // SULAWESI
             { id: 'su1', region: 'Sulawesi', diff: 'Mudah', title: 'La Dana yang Cerdik (Sulsel)', audioUrl: './la_dana_yang_cerdik.wav', desc: 'Kecerdikan pemuda melawan kesombongan bangsawan.', content: `Pada zaman dahulu di daerah Sulawesi Selatan, hiduplah seorang pemuda bernama La Dana yang dikenal cerdik dan cepat berpikir. Ia berasal dari keluarga sederhana, tetapi memiliki kecerdasan yang membuatnya disegani oleh masyarakat. Suatu hari, seorang bangsawan yang sombong menantang siapa saja untuk memecahkan teka-teki dan persoalan sulit yang ia berikan. Banyak orang mencoba, tetapi semuanya gagal.<br><br>La Dana pun datang untuk mencoba peruntungannya. Dengan tenang dan penuh percaya diri, ia mendengarkan setiap teka-teki yang diberikan. Berkat kecerdasannya, ia mampu menjawab semua pertanyaan dengan tepat. Hal ini membuat bangsawan tersebut merasa malu, tetapi juga kagum pada kemampuan La Dana. Namun, karena kesombongannya, bangsawan itu mencoba menjebak La Dana dengan persoalan yang tampaknya mustahil diselesaikan.<br><br>Dengan kecerdikan dan akalnya, La Dana tidak terpancing emosi. Ia justru membalik keadaan dengan jawaban yang sederhana namun tepat, sehingga membuat semua orang menyadari bahwa kesombongan tidak ada gunanya. Akhirnya, bangsawan tersebut mengakui kehebatan La Dana dan belajar untuk menjadi lebih rendah hati. Sejak saat itu, La Dana dikenal sebagai pemuda yang bukan hanya cerdas, tetapi juga bijaksana.<br><br>Cerita ini mengajarkan bahwa kecerdikan, ketenangan, dan kerendahan hati lebih berharga daripada kesombongan.`, 
               questions: [
                 { q: "Apa yang dilakukan bangsawan sombong kepada masyarakat?", a: ["Membagikan harta", "Menantang memecahkan teka-teki sulit", "Menantang bertarung pedang", "Menyita tanah warga"], c: 1, exp: "Bangsawan itu memamerkan kepintarannya dengan menantang orang-orang dengan teka-teki." },
@@ -876,7 +449,6 @@
               ]
             },
 
-            // KALIMANTAN
             { id: 'k1', region: 'Kalimantan', diff: 'Mudah', title: 'Legenda Pesut Mahakam (Kaltim)', audioUrl: '', desc: 'Anak pembangkang yang dikutuk menjadi hewan air.', content: `Pada zaman dahulu di daerah Kalimantan Timur, mengalirlah sebuah sungai besar yang kini dikenal sebagai Sungai Mahakam. Di tepi sungai itu hiduplah sebuah keluarga yang sederhana. Mereka memiliki seorang anak laki-laki yang terkenal nakal dan sering membangkang kepada orang tuanya. Ia kerap pergi bermain tanpa memedulikan nasihat ibunya.<br><br>Suatu hari, sang ibu meminta anaknya untuk membantu pekerjaan rumah, tetapi ia menolak dengan kasar. Ia bahkan berkata tidak sopan kepada ibunya. Hati sang ibu sangat terluka melihat sikap anaknya yang durhaka. Dalam kesedihannya, sang ibu berdoa kepada Tuhan agar anaknya diberi pelajaran atas perbuatannya.<br><br>Tak lama kemudian, saat anak itu berada di tepi sungai, tiba-tiba datang arus deras yang menyeretnya ke tengah sungai. Ia berusaha meminta pertolongan, tetapi tidak ada yang bisa menyelamatkannya. Tubuhnya perlahan berubah menjadi seekor hewan air yang aneh, yang kemudian dikenal sebagai pesut. Sejak saat itu, masyarakat percaya bahwa pesut yang hidup di Sungai Mahakam berasal dari anak durhaka tersebut.<br><br>Pesut Mahakam menjadi simbol peringatan bagi masyarakat agar selalu menghormati orang tua dan tidak bersikap kasar kepada mereka. Hingga kini, keberadaan pesut di sungai tersebut masih dianggap sebagai bagian dari legenda yang diwariskan turun-temurun.<br><br>Cerita ini mengajarkan bahwa sikap durhaka kepada orang tua akan membawa penyesalan, sementara kasih sayang dan hormat adalah hal yang harus dijaga sepanjang hidup.`, 
               questions: [
                 { q: "Apa sifat dominan dari anak laki-laki dalam cerita ini?", a: ["Rajin bekerja", "Cengeng", "Nakal dan sering membangkang", "Suka membantu"], c: 2, exp: "Tokoh utama anak di sini digambarkan sangat nakal dan durhaka." },
@@ -905,7 +477,6 @@
               ]
             },
 
-            // PAPUA
             { id: 'p1', region: 'Papua', diff: 'Mudah', title: 'Asal Mula Burung Cenderawasih (Papua)', audioUrl: '', desc: 'Kesedihan yang bermetamorfosis menjadi burung terindah di dunia.', content: `Pada zaman dahulu di wilayah Papua, hiduplah seorang gadis cantik yang dikenal baik hati dan rajin membantu orang tuanya. Ia tinggal di sebuah desa yang dikelilingi hutan lebat dan alam yang indah. Gadis itu memiliki suara merdu dan sering bernyanyi di tepi hutan, sehingga membuat siapa pun yang mendengarnya merasa tenang.<br><br>Suatu hari, ia bertemu dengan seorang pemuda asing yang tersesat di hutan. Dengan penuh kebaikan, gadis itu menolongnya dan merawatnya hingga pulih. Seiring waktu, keduanya menjadi akrab. Namun, pemuda itu ternyata harus kembali ke negerinya. Sebelum pergi, ia memberikan sebuah hadiah berupa kain indah kepada gadis tersebut sebagai tanda terima kasih. Gadis itu sangat sedih karena harus berpisah. Ia sering duduk di hutan sambil mengenang pertemuan mereka.<br><br>Suatu hari, ia mengenakan kain pemberian pemuda itu dan menari di tengah hutan sambil bernyanyi. Keajaiban pun terjadi, tubuhnya perlahan berubah menjadi seekor burung yang sangat indah dengan bulu berwarna cerah dan berkilau. Burung itu kemudian dikenal sebagai Burung Cenderawasih. Sejak saat itu, masyarakat percaya bahwa burung cenderawasih berasal dari jelmaan gadis baik hati tersebut. Burung ini dianggap sebagai simbol keindahan dan keanggunan alam Papua.<br><br>Cerita ini mengajarkan tentang ketulusan, kebaikan hati, dan keindahan yang lahir dari perasaan yang tulus.`, 
               questions: [
                 { q: "Ciri-ciri apa yang paling menonjol dari gadis dalam cerita ini?", a: ["Ahli memanah", "Pandai memasak", "Baik hati, rajin membantu, dan bersuara merdu", "Suka berperang"], c: 2, exp: "Gadis itu suka menyanyi di tepi hutan dan sangat ringan tangan." },
@@ -935,274 +506,224 @@
             }
         ];
 
-        // Data awal pemain saat aplikasi baru dibuka
-        // Data awal pemain saat aplikasi baru dibuka (Diubah agar membaca dari memori perangkat)
-        // Membaca data yang mungkin tersisa di perangkat
-        // --- PERBAIKAN 1: Gunakan penyimpanan Multi-Akun (Profiles) ---
-        // --- PERBAIKAN 1: Deteksi Akun Aktif Saat Refresh ---
+        // START AS GUEST
         let user = { 
-            originalName: "Satria Amarta",
-            name: "Satria Amarta", 
-            pin: "", 
-            exp: 0, 
-            level: 1,
-            title: "Prajurit Cilik",
-            activeld: 'arjuna', 
-            readTimes: [],
-            quizScores: [],
-            readStories: 0,
-            sqCount: 0,
-            completedStories: {},
-            serverAvgScore: 0,
-            serverTotalTime: 0
+            originalName: "Satria Amarta", name: "Satria Amarta", pin: "", 
+            exp: 0, level: 1, title: "Prajurit Cilik", activeld: 'arjuna', 
+            readTimes: [], quizScores: [], readStories: 0, sqCount: 0,
+            completedStories: {}, serverAvgScore: 0, serverTotalTime: 0
         };
 
-        // Fungsi baru untuk mengecek cerita mana saja yang sudah memenuhi 3 syarat!
-        function updateReadStoriesCount() {
-            let count = 0;
-            for (let id in user.completedStories) {
-                let s = user.completedStories[id];
-                // MODE MAHAGURU: Langsung lulus
-                if (user.name.toLowerCase() === "mahaguru") { count++; continue; }
-                
-                if ((s.quizScore || 0) >= 80 && (s.writingScore || 0) >= 50 && (s.readTime || 0) >= 60) {
-                    count++;
-                }
-            }
-            user.readStories = count;
-        }
-
-        // Batas nilai pengalaman (EXP) untuk naik ke level berikutnya
         const levelThresholds = [0, 100, 250, 450, 700, 1000, 1350, 1750, 2200];
-        
-        // Data sementara saat aplikasi sedang berjalan
-        let currentStoryId = null;
-        let currentLibraryFilter = 'Semua';
+        let currentStoryId = null; let currentLibraryFilter = 'Semua';
         let quizState = { active: false, questions: [], currentIndex: 0, score: 0, isRemedial: false, isTransitioning: false };
-        let readingTimerInterval;
-        let readingSeconds = 0;
-        
-        // ===== VARIABEL AUDIO CERITA =====
-        let storyAudio = new Audio();
-        let isStoryPlaying = false;
-        
-        // Memaksa peramban (browser) untuk mengenali panjang lagu dengan cepat
+        let storyAudio = new Audio(); let isStoryPlaying = false;
         storyAudio.preload = 'metadata';
 
-        // Ketika waktu audio berjalan, ubah teks durasi menit/detik dan panjang bilah (bar) pemutar suara
         storyAudio.addEventListener('timeupdate', () => {
-            const timerText = $('audio-timer');
-            const progressFill = $('audio-progress-fill');
-            
+            const timerText = $('audio-timer'); const progressFill = $('audio-progress-fill');
             if (storyAudio.duration) {
                 const currentMin = String(Math.floor(storyAudio.currentTime / 60)).padStart(2, '0');
                 const currentSec = String(Math.floor(storyAudio.currentTime % 60)).padStart(2, '0');
                 const totalMin = String(Math.floor(storyAudio.duration / 60)).padStart(2, '0');
                 const totalSec = String(Math.floor(storyAudio.duration % 60)).padStart(2, '0');
-                
                 if (timerText) timerText.innerText = `${currentMin}:${currentSec} / ${totalMin}:${totalSec}`;
-                
                 const percent = (storyAudio.currentTime / storyAudio.duration) * 100;
                 if (progressFill) progressFill.style.width = `${percent}%`;
             }
         });
 
-        // Mematikan tanda pemutar suara jika lagu/narasi sudah selesai
-        storyAudio.addEventListener('ended', () => {
-            isStoryPlaying = false;
-            updatePlayIcon();
-        });
+        storyAudio.addEventListener('ended', () => { isStoryPlaying = false; updatePlayIcon(); });
 
-        // Fungsi menyalakan atau memberhentikan (pause) narasi suara
         function toggleStoryAudio() {
             if (!storyAudio.src || storyAudio.src.endsWith('null') || storyAudio.src === window.location.href) return;
-
-            if (isStoryPlaying) {
-                storyAudio.pause();
-                isStoryPlaying = false;
-                bgm.volume = 0.05; 
-            } else {
-                storyAudio.play();
-                isStoryPlaying = true;
-                bgm.volume = 0.01; // Meredupkan suara lagu latar agar suara cerita terdengar jelas
-            }
+            if (isStoryPlaying) { storyAudio.pause(); isStoryPlaying = false; bgm.volume = 0.05; } 
+            else { storyAudio.play(); isStoryPlaying = true; bgm.volume = 0.01; }
             updatePlayIcon();
         }
 
-        // Fungsi untuk melompat ke menit tertentu pada pemutar suara jika bilah diklik
         function seekStoryAudio(event) {
             if (!storyAudio.duration) return;
-            
-            const track = $('audio-progress-track');
-            const rect = track.getBoundingClientRect();
-            const clickPosition = event.clientX - rect.left;
-            const percentClicked = clickPosition / rect.width;
-            
+            const track = $('audio-progress-track'); const rect = track.getBoundingClientRect();
+            const clickPosition = event.clientX - rect.left; const percentClicked = clickPosition / rect.width;
             storyAudio.currentTime = percentClicked * storyAudio.duration;
         }
 
-        // Fungsi mengganti gambar ikon "Mainkan" menjadi "Jeda"
         function updatePlayIcon() {
-            const iconContainer = $('audio-icon');
-            if (!iconContainer) return;
-
-            if (isStoryPlaying) {
-                iconContainer.setAttribute('data-lucide', 'pause');
-                iconContainer.classList.remove('ml-1'); 
-            } else {
-                iconContainer.setAttribute('data-lucide', 'play');
-                iconContainer.classList.add('ml-1'); 
-            }
+            const iconContainer = $('audio-icon'); if (!iconContainer) return;
+            if (isStoryPlaying) { iconContainer.setAttribute('data-lucide', 'pause'); iconContainer.classList.remove('ml-1'); } 
+            else { iconContainer.setAttribute('data-lucide', 'play'); iconContainer.classList.add('ml-1'); }
             lucide.createIcons();
         }
 
-        // Fungsi memulihkan data jika nama sudah ada, dan menolak jika PIN salah
-        async function restoreUserDataIfExist(playerName, playerPin) {
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
-                const data = await response.json();
-                const serverUser = data.find(s => (s.Nama || s.nama || "").trim().toLowerCase() === playerName.toLowerCase());
-                
-                if (serverUser) {
-                    const serverPin = (serverUser.Pin || serverUser.pin || "").toString().trim();
-                    // JIKA NAMA ADA, CEK APAKAH PIN-NYA SAMA
-                    if (serverPin === playerPin) {
-                        // 1. Ambil data cadangan detail (Kuis & Jam Baca) dari Lemari Arsip Lokal
-                        let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
-                        let myLocalData = localDB[playerName.toLowerCase()];
-
-                        // 2. Tarik Rekap utama dari Server
-                        user.name = playerName;
-                        user.pin = playerPin;
-                        user.originalName = playerName;
-                        user.exp = parseInt(serverUser.Exp || serverUser.exp) || 0;
-                        user.level = parseInt(serverUser.Level || serverUser.level) || 1;
-                        user.readStories = parseInt(serverUser.ReadStories || serverUser.readStories) || 0;
-                        user.serverAvgScore = parseInt(serverUser.AvgScore || serverUser.avgscore) || 0;
-                        user.serverTotalTime = parseInt(serverUser.AvgTime || serverUser.avgtime) || 0;
-
-                        // 3. Pasang kembali detail cerita (Certified) jika pernah dimainkan di perangkat ini
-                        if (myLocalData) {
-                            user.completedStories = myLocalData.completedStories || {};
-                            user.readTimes = myLocalData.readTimes || [];
-                            user.quizScores = myLocalData.quizScores || [];
-                        } else {
-                            user.completedStories = {}; user.readTimes = []; user.quizScores = [];
-                        }
-
-                        // 4. Hitung ulang kelulusan kuis berdasarkan data yang baru dipasang
-                        updateReadStoriesCount();
-                        calculateLevel();
-                        
-                        // 5. Kunci data ini sebagai user aktif
-                        localStorage.setItem('arsiLokaActiveUser', JSON.stringify(user));
-                        
-                        showToast(`Selamat datang kembali, ${playerName}!`, "success");
-                        return true;
-                    } else {
-                        showToast("Kata sandi (PIN) salah! Gunakan PIN yang benar atau buat nama lain.", "error");
-                        return false; 
-                    }
-                } else {
-                    const isRenaming = data.find(s => (s.Nama || s.nama || "").trim().toLowerCase() === user.originalName.toLowerCase());
-                    if (!isRenaming) {
-                        user.exp = 0; user.level = 1; user.readStories = 0;
-                        user.readTimes = []; user.quizScores = []; user.completedStories = {}; user.sqCount = 0;
-                        calculateLevel();
-                    }
-                    showToast("Akun Ksatria Baru berhasil dibuat!", "success");
-                    return true;
-                }
-            } catch(e) {
-                showToast("Identitas Disimpan (Mode Offline).", "success");
-                return true;
+        function updateReadStoriesCount() {
+            let count = 0;
+            for (let id in user.completedStories) {
+                let s = user.completedStories[id];
+                if (user.name.toLowerCase() === "mahaguru") { count++; continue; }
+                if ((s.quizScore || 0) >= 80 && (s.writingScore || 0) >= 50 && (s.readTime || 0) >= 60) { count++; }
             }
+            user.readStories = count;
         }
 
-        // Fungsi yang dijalankan saat tombol "Simpan Profil" diklik
+        async function fetchLeaderboardData() {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
+                if (!response.ok) throw new Error('Gagal ambil data.');
+                const data = await response.json();
+                return data.map(item => ({
+                    nama: (item.Nama || item.nama || "").trim(),
+                    pin: (item.Pin || item.pin || "").toString().trim(),
+                    sekolah: item.Sekolah || item.sekolah || "SDN 1 Amarta",
+                    level: parseInt(item.Level || item.level) || 1,
+                    exp: parseInt(item.Exp || item.exp) || 0,
+                    avgScore: parseInt(item.AvgScore || item.avgscore) || 0,
+                    readStories: parseInt(item.ReadStories || item.readstories) || 0,
+                    avgTime: parseInt(item.AvgTime || item.avgtime) || 0,
+                    completedStoriesStr: item.CompletedStories || "{}",
+                    quizScoresStr: item.QuizScores || "[]"
+                }));
+            } catch (error) { console.error(error); return []; }
+        }
+
+        async function syncDataToSheet() {
+            if (user.name === "Satria Amarta") return;
+            let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
+            localDB[user.name.toLowerCase()] = user;
+            localStorage.setItem('arsiLokaProfiles', JSON.stringify(localDB));
+
+            if (!GOOGLE_SCRIPT_URL) return;
+            if (user.exp === 0 && (user.serverAvgScore > 0 || user.readStories > 0)) return;
+
+            let totalScore = 0, validQuizCount = 0;
+            Object.values(user.completedStories).forEach(st => { 
+                if (st.quizAttempts > 0) { totalScore += (st.quizScore || 0); validQuizCount++; } 
+            });
+            
+            const payload = {
+                oldName: user.originalName, nama: user.name, pin: user.pin, sekolah: "SDN 1 Amarta", 
+                level: user.level, exp: user.exp,
+                avgScore: validQuizCount > 0 ? Math.round(totalScore / validQuizCount) : (user.serverAvgScore || 0),
+                readStories: user.readStories, 
+                avgTime: user.readTimes.length > 0 ? Math.round(user.readTimes.reduce((a,b)=>a+b,0) / 60) : (user.serverTotalTime || 0),
+                completedStories: user.completedStories, quizScores: user.quizScores
+            };
+
+            try {
+                fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            } catch (e) { console.error(e); }
+        }
+
         async function saveUserProfile() {
-            const inputUsername = $('input-username');
-            const inputPin = $('input-password');
-            const MASTER_PIN_GURU = "889911"; // <--- PIN KHUSUS GURU
+            const inputUsername = $('input-username'); const inputPin = $('input-password');
+            const MASTER_PIN_GURU = "889911";
 
-            if(!inputUsername.value.trim() || !inputPin.value.trim()) {
-                showToast("Nama dan PIN tidak boleh kosong!", "error"); return;
-            }
+            if(!inputUsername.value.trim() || !inputPin.value.trim()) { showToast("Nama dan PIN tidak boleh kosong!", "error"); return; }
 
-            const newName = inputUsername.value.trim();
-            const newPin = inputPin.value.trim();
+            const newName = inputUsername.value.trim(); const newPin = inputPin.value.trim();
 
-            // Proteksi Nama Mahaguru
             if (newName.toLowerCase() === "mahaguru" && newPin !== MASTER_PIN_GURU) {
                 showToast("Nama 'Mahaguru' dilindungi! Gunakan PIN Master.", "error"); return;
             }
 
             const btn = document.querySelector('#profile-content button[onclick="saveUserProfile()"]');
-            btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Sinkronisasi...';
-            btn.disabled = true; lucide.createIcons();
+            btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Sinkronisasi...'; btn.disabled = true; lucide.createIcons();
 
-            // AMBIL DATA TERBARU DARI SERVER DULU
-            const response = await fetch(GOOGLE_SCRIPT_URL, { redirect: "follow" });
-            const allUsers = await response.json();
-            const serverUser = allUsers.find(s => (s.Nama || s.nama || "").trim().toLowerCase() === newName.toLowerCase());
+            const allUsers = await fetchLeaderboardData();
+            const serverUser = allUsers.find(s => s.nama.toLowerCase() === newName.toLowerCase());
 
             if (serverUser) {
-                if ((serverUser.Pin || serverUser.pin || "").toString() === newPin) {
-                    // PIN COCOK: Ambil rekap dari server
+                if ((serverUser.pin || "").toString() === newPin) {
                     user.name = newName; user.pin = newPin; user.originalName = newName;
-                    user.exp = parseInt(serverUser.Exp || serverUser.exp) || 0;
-                    user.level = parseInt(serverUser.Level || serverUser.level) || 1;
-                    user.readStories = parseInt(serverUser.ReadStories || serverUser.readStories) || 0;
-                    user.serverAvgScore = parseInt(serverUser.AvgScore || serverUser.avgscore) || 0;
-                    user.serverTotalTime = parseInt(serverUser.AvgTime || serverUser.avgtime) || 0;
+                    user.exp = parseInt(serverUser.exp) || 0; user.level = parseInt(serverUser.level) || 1;
+                    user.readStories = parseInt(serverUser.readStories) || 0;
+                    user.serverAvgScore = parseInt(serverUser.avgScore) || 0; user.serverTotalTime = parseInt(serverUser.avgTime) || 0;
 
-                    // Ambil detail cerita dari memori laptop (jika ada)
                     let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
                     if (localDB[newName.toLowerCase()]) {
                         let ld = localDB[newName.toLowerCase()];
-                        user.completedStories = ld.completedStories || {};
-                        user.readTimes = ld.readTimes || [];
+                        user.completedStories = ld.completedStories || {}; user.readTimes = ld.readTimes || []; user.quizScores = ld.quizScores || [];
+                    } else {
+                        user.completedStories = {}; user.readTimes = []; user.quizScores = [];
                     }
                     showToast("Progres berhasil dipulihkan!", "success");
                 } else {
-                    showToast("PIN Salah!", "error");
-                    btn.innerHTML = "Simpan Profil"; btn.disabled = false; return;
+                    showToast("PIN Salah!", "error"); btn.innerHTML = "Simpan Profil"; btn.disabled = false; return;
                 }
             } else {
-                // USER BARU: Reset Total
-                user = { ...user, name: newName, pin: newPin, originalName: newName, exp: 0, level: 1, readStories: 0, completedStories: {} };
+                user = { ...user, name: newName, pin: newPin, originalName: newName, exp: 0, level: 1, readStories: 0, completedStories: {}, readTimes: [], quizScores: [] };
                 showToast("Akun baru dibuat!", "success");
             }
 
-            calculateLevel();
-            updateReadStoriesCount();
-            // Simpan status aktif ke browser
-            localStorage.setItem('arsiLokaActiveUser', JSON.stringify(user));
-            
-            closeModal('screen-profile');
-            updateNav();
-            btn.innerHTML = "Simpan Profil"; btn.disabled = false;
-            showScreen('home');
+            calculateLevel(); updateReadStoriesCount(); localStorage.setItem('arsiLokaActiveUser', JSON.stringify(user)); syncDataToSheet();
+            closeModal('screen-profile'); updateNav(); btn.innerHTML = "Simpan Profil"; btn.disabled = false; showScreen('home');
         }
 
-        function finishLoginProcess() {
-            localStorage.setItem('arsiLokaActiveUser', JSON.stringify(user));
-            // Update Lemari Multi-Akun
-            let localDB = JSON.parse(localStorage.getItem('arsiLokaProfiles')) || {};
-            localDB[user.name.toLowerCase()] = user;
-            localStorage.setItem('arsiLokaProfiles', JSON.stringify(localDB));
+        async function updateLeaderboardUI() {
+            const data = await fetchLeaderboardData();
+            if (data.length === 0) return; 
+
+            const schoolRank = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a, b) => Number(b.exp) - Number(a.exp));
+            const userSchoolRank = schoolRank.findIndex(s => s.nama.toLowerCase() === user.name.toLowerCase()) + 1;
+            const totalSchool = schoolRank.length;
             
-            calculateLevel();
-            syncDataToSheet(); // Jalankan sinkronisasi di latar belakang (non-blocking)
-            closeModal('screen-profile');
-            updateNav();
-            setTimeout(() => { showScreen('home'); }, 300);
+            let percentile = userSchoolRank > 0 && totalSchool > 1 ? Math.round(((totalSchool - userSchoolRank) / totalSchool) * 100) : 0;
+
+            const rankTextEl = $('rank-sch'); const totalTextEl = $('total-sch');
+            if(rankTextEl) rankTextEl.innerText = userSchoolRank > 0 ? userSchoolRank : '?';
+            if(totalTextEl) totalTextEl.innerText = totalSchool;
+
+            const pctValEl = $('pct-val'); const pctBarEl = $('pct-bar'); const pctDescEl = $('pct-desc');
+            if(pctValEl) pctValEl.innerText = (100 - percentile);
+            if(pctBarEl) pctBarEl.style.width = `${percentile}%`;
+            if(pctDescEl) pctDescEl.innerText = `Wow! Kamu lebih hebat dari ${percentile}% teman satu sekolahmu!`;
+            
+            const avatarContainer = $('school-avatar-container');
+            if (avatarContainer) {
+                let avatarHtml = '<p class="text-xs text-amber-500 font-bold mb-4">Teman-teman teratas:</p><div class="flex -space-x-3">';
+                for(let i=0; i<Math.min(3, schoolRank.length); i++){
+                    let isMe = schoolRank[i].nama === user.name;
+                    avatarHtml += `<div class="w-16 h-16 rounded-full ${isMe ? 'bg-sky-500 text-white' : 'bg-slate-200 text-slate-600'} flex items-center justify-center text-sm font-black shadow-md z-${30-i*10} border-4 border-white" title="${schoolRank[i].nama}">${isMe ? 'Kamu' : schoolRank[i].nama.substring(0,3).toUpperCase()}</div>`;
+                }
+                if(userSchoolRank > 3) { avatarHtml += `<div class="w-16 h-16 rounded-full bg-sky-500 flex items-center justify-center text-xs font-black text-white shadow-md z-0 scale-110 ml-6 border-4 border-white" title="${user.name}">Kamu</div>`; }
+                avatarHtml += '</div>'; avatarContainer.innerHTML = avatarHtml;
+            }
+            lucide.createIcons();
         }
 
-        // Fungsi untuk melihat berapa banyak cerita dari tingkat tertentu (mudah/sedang/sulit) yang sudah diselesaikan
+        async function renderTeacherTableFull() {
+            const tbody = $('teacher-table-body');
+            tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm"><i data-lucide="loader" class="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400"></i> Membuka buku catatan...</td></tr>';
+            lucide.createIcons();
+
+            const data = await fetchLeaderboardData();
+            const schoolData = data.filter(s => s.sekolah === "SDN 1 Amarta").sort((a,b) => b.exp - a.exp);
+
+            if (schoolData.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-slate-400 font-bold text-sm">Belum ada siswa yang bermain.</td></tr>'; return; }
+
+            let html = '';
+            schoolData.forEach((student, index) => {
+                let status = "Ayo Belajar Lagi!";
+                if (student.avgScore >= 80) status = "Hebat Sekali!"; else if (student.avgScore >= 60) status = "Sudah Bagus";
+                let statusClass = status === 'Hebat Sekali!' ? 'text-emerald-700 bg-emerald-100 border-emerald-200' : (status === 'Sudah Bagus' ? 'text-sky-700 bg-sky-100 border-sky-200' : 'text-amber-700 bg-amber-100 border-amber-200');
+                let isMe = student.nama.toLowerCase() === user.name.toLowerCase();
+                let rowClass = isMe ? 'bg-sky-50 border-l-4 border-l-sky-500' : 'bg-white border-b border-slate-100 hover:bg-slate-50';
+                let iconStr = isMe ? '<i data-lucide="smile" class="w-5 h-5 text-sky-500 fill-sky-200"></i> ' : '<span class="text-slate-300 w-5 inline-block text-center font-black">' + (index+1) + '</span>';
+
+                html += `
+                    <tr class="${rowClass} transition-colors">
+                        <td class="py-4 pl-4 font-bold text-slate-700 flex items-center gap-3">${iconStr}${student.nama} ${isMe ? '<span class="text-[10px] text-sky-500 bg-white border border-sky-200 px-2 py-0.5 rounded-full uppercase">Kamu</span>' : ''}</td>
+                        <td class="py-4 text-center text-sm font-bold text-slate-500">${student.readStories || 0} Buku</td>
+                        <td class="py-4 text-center font-black text-xl text-sky-500">${student.avgScore}</td>
+                        <td class="py-4 text-center text-xs font-bold text-slate-400">${student.avgTime || 0} Menit</td>
+                        <td class="py-4 text-center"><span class="px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${statusClass}">${status}</span></td>
+                    </tr>`;
+            });
+            tbody.innerHTML = html; lucide.createIcons();
+        }
+
         function getTierStats(diffLevel) {
             let storiesInTier = libraryData.filter(s => s.diff === diffLevel).map(s => s.id);
-            // MODE MAHAGURU: Dianggap sudah menyelesaikan semua
             if (user.name.toLowerCase() === "mahaguru") return { isCleared: true, completedCount: 5, totalCount: 5, avgScore: 100 };
 
             let completedInTier = storiesInTier.filter(id => {
@@ -1212,60 +733,36 @@
             
             let avgScore = 0;
             if (completedInTier.length > 0) {
-                let sum = completedInTier.reduce((acc, id) => acc + (user.completedStories[id].quizScore || 0), 0);
-                avgScore = sum / completedInTier.length;
+                let sum = 0, validQuizCount = 0;
+                completedInTier.forEach(id => { let score = user.completedStories[id].quizScore; if (score !== undefined) { sum += score; validQuizCount++; } });
+                avgScore = validQuizCount > 0 ? (sum / validQuizCount) : 0;
             }
-            
-            return {
-                completedCount: completedInTier.length,
-                totalCount: storiesInTier.length,
-                avgScore: Math.round(avgScore),
-                isCleared: completedInTier.length >= 5 && avgScore >= 80 
-            };
+            return { completedCount: completedInTier.length, totalCount: storiesInTier.length, avgScore: Math.round(avgScore), isCleared: completedInTier.length >= 5 && avgScore >= 80 };
         }
 
-        // Fungsi untuk menghitung level pemain berdasarkan jumlah EXP yang dimiliki
         function calculateLevel() {
             let newLevel = 1;
-            for(let i = 0; i < levelThresholds.length; i++) {
-                if(user.exp >= levelThresholds[i]) newLevel = i + 1;
-            }
+            for(let i = 0; i < levelThresholds.length; i++) { if(user.exp >= levelThresholds[i]) newLevel = i + 1; }
             user.level = newLevel;
-            
-            if(user.level >= 15) user.title = "Ksatria Legenda";
-            else if(user.level >= 10) user.title = "Ksatria Hebat";
-            else if(user.level >= 5) user.title = "Ksatria Rajin";
-            else user.title = "Prajurit Cilik";
-            
+            if(user.level >= 15) user.title = "Ksatria Legenda"; else if(user.level >= 10) user.title = "Ksatria Hebat"; else if(user.level >= 5) user.title = "Ksatria Rajin"; else user.title = "Prajurit Cilik";
             updateNav();
         }
 
-        // Fungsi untuk memperbarui tulisan nama dan exp di menu atas (navigasi)
         function updateNav() {
-            const elName = $('nav-name');
-            const elPts = $('nav-pts');
-            const elLevelTitle = $('nav-level-title');
-            const elAvatar = $('nav-avatar');
-            
-            // Elemen di dalam Modal Profil (Agar Sinkron)
-            const profExp = $('prof-exp');
-            const profLevel = $('prof-level-num');
-            const profBar = $('prof-exp-bar');
+            const elName = $('nav-name'); const elPts = $('nav-pts'); const elLevelTitle = $('nav-level-title'); const elAvatar = $('nav-avatar');
+            const profExp = $('prof-exp'); const profLevel = $('prof-level-num'); const profBar = $('prof-exp-bar');
 
             if(elName) elName.innerText = user.name;
             if(elPts) elPts.innerText = user.exp + " EXP";
             if(elLevelTitle) elLevelTitle.innerText = `LV ${user.level}: ${user.title}`;
             
-            // --- SINKRONISASI KE MODAL PROFIL ---
             if(profExp) profExp.innerText = user.exp;
             if(profLevel) profLevel.innerText = user.level;
             if(profBar) {
-                // Hitung progres bar berdasarkan thresholds level
                 const nextLimit = levelThresholds[user.level - 1] || 2200;
                 const percent = Math.min((user.exp / nextLimit) * 100, 100);
                 profBar.style.width = percent + "%";
             }
-            // -------------------------------------
 
             if(elAvatar) {
                 if(user.activeld === 'arjuna') elAvatar.innerHTML = '<i data-lucide="shield" class="w-6 h-6"></i>';
@@ -1275,18 +772,12 @@
             lucide.createIcons();
         }
 
-        // Fungsi untuk menggambar halaman Pustaka Buku (Daftar Cerita)
         function renderLibrary(filterRegion = currentLibraryFilter) {
             currentLibraryFilter = filterRegion;
-            const grid = $('library-grid');
-            const tabsContainer = $('library-tabs');
-            
-            const statsMudah = getTierStats('Mudah');
-            const statsSedang = getTierStats('Sedang');
-            
+            const grid = $('library-grid'); const tabsContainer = $('library-tabs');
+            const statsMudah = getTierStats('Mudah'); const statsSedang = getTierStats('Sedang');
             const regions = ['Semua', 'Jawa', 'Sumatra', 'Sulawesi', 'Kalimantan', 'Papua'];
             
-            // Menampilkan tombol-tombol penyaring wilayah (Pulau)
             tabsContainer.innerHTML = regions.map(reg => {
                 const isActive = reg === currentLibraryFilter;
                 const baseClass = "px-5 py-2.5 rounded-full font-bold text-xs cursor-pointer transition-all border-2";
@@ -1296,667 +787,220 @@
             }).join('');
 
             let html = '';
+            const filteredStories = filterRegion === 'Semua' ? libraryData : libraryData.filter(s => s.region.toLowerCase() === filterRegion.toLowerCase());
 
-            const filteredStories = filterRegion === 'Semua' 
-                ? libraryData 
-                : libraryData.filter(s => s.region.toLowerCase() === filterRegion.toLowerCase());
-
-            // Menggambar kartu cerita satu per satu
             html += filteredStories.map((story, idx) => {
                 const delay = ((idx + 1) * 0.1);
-                let isLocked = false;
-                let lockMsg = "";
+                let isLocked = false; let lockMsg = "";
 
-                // --- PERBAIKAN: Mahaguru bebas dari sistem kunci ---
                 if (user.name.toLowerCase() !== "mahaguru") {
-                    if(story.diff === 'Sedang' && !statsMudah.isCleared) {
-                        isLocked = true; lockMsg = "Selesaikan 5 Cerita Mudah dulu ya!";
-                    }
-                    if(story.diff === 'Sulit' && !statsSedang.isCleared) {
-                        isLocked = true; lockMsg = "Selesaikan 5 Cerita Sedang dulu ya!";
-                    }
-                }
-                
-                if(story.diff === 'Sedang' && !statsMudah.isCleared) {
-                    isLocked = true; lockMsg = "Selesaikan 5 Cerita Mudah dulu ya!";
-                }
-                if(story.diff === 'Sulit' && !statsSedang.isCleared) {
-                    isLocked = true; lockMsg = "Selesaikan 5 Cerita Sedang dulu ya!";
+                    if(story.diff === 'Sedang' && !statsMudah.isCleared) { isLocked = true; lockMsg = "Selesaikan 5 Cerita Mudah dulu ya!"; }
+                    if(story.diff === 'Sulit' && !statsSedang.isCleared) { isLocked = true; lockMsg = "Selesaikan 5 Cerita Sedang dulu ya!"; }
                 }
 
                 const diffColor = story.diff === 'Mudah' ? 'bg-emerald-100 text-emerald-700 border-emerald-300' : (story.diff === 'Sedang' ? 'bg-sky-100 text-sky-700 border-sky-300' : 'bg-amber-100 text-amber-700 border-amber-300');
                 const styleData = getStoryIconStyle(story.id);
 
                 const cInfo = user.completedStories[story.id];
-                const isCleared = cInfo && cInfo.quizScore >= 80 && cInfo.writingScore >= 50 && cInfo.readTime >= 60;
+                const isCleared = cInfo && (cInfo.quizScore || 0) >= 80 && (cInfo.writingScore || 0) >= 50 && (cInfo.readTime || 0) >= 60;
                 
-                const checkmarkHtml = isCleared ? `
-                <div class="absolute top-4 right-4 z-30 drop-shadow-md transform rotate-12 animate-in zoom-in">
-                    <div class="bg-amber-400 border-4 border-white text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
-                        <i data-lucide="star" class="w-6 h-6 fill-white"></i>
-                    </div>
-                </div>` : '';
+                const checkmarkHtml = isCleared ? `<div class="absolute top-4 right-4 z-30 drop-shadow-md transform rotate-12 animate-in zoom-in"><div class="bg-amber-400 border-4 border-white text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg"><i data-lucide="star" class="w-6 h-6 fill-white"></i></div></div>` : '';
 
                 return `
                 <div class="kid-panel p-0 flex flex-col group ${isLocked ? 'opacity-60 cursor-not-allowed grayscale-[30%]' : 'cursor-pointer'} rounded-[2rem]" style="animation: slideUpFade 0.5s ease-out ${delay}s forwards; opacity: 0;" onclick="${isLocked ? `showToast('${lockMsg}')` : `openStory('${story.id}')`}">
-                    
                     ${checkmarkHtml}
                     ${isLocked ? `<div class="absolute inset-0 z-20 bg-slate-900/40 backdrop-blur-[2px] flex flex-col items-center justify-center text-white text-center p-6 rounded-[2rem]"><div class="bg-white p-4 rounded-full mb-3 shadow-lg"><i data-lucide="lock" class="w-8 h-8 text-slate-400"></i></div><span class="bg-white text-slate-700 px-4 py-2 text-xs font-bold border-2 border-slate-200 rounded-full shadow-md">${lockMsg}</span></div>` : ''}
-
-                    <div class="h-40 bg-gradient-to-br ${styleData.color} relative overflow-hidden flex items-center justify-center border-b-4 border-slate-100">
-                        <i data-lucide="${styleData.icon}" class="w-20 h-20 opacity-80 group-hover:scale-125 transition-transform duration-500 drop-shadow-sm"></i>
-                        <span class="absolute top-4 left-4 bg-white/90 text-slate-700 text-[10px] font-black px-3 py-1 rounded-full shadow-sm uppercase">${story.region}</span>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow bg-white relative">
-                        <h3 class="text-xl font-black text-slate-800 mb-3 leading-tight line-clamp-2">${story.title}</h3>
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="text-[10px] font-black px-3 py-1 rounded-full border-2 uppercase ${diffColor}">${story.diff}</span>
-                        </div>
-                        <p class="text-sm text-slate-500 font-medium leading-relaxed mb-6 flex-grow line-clamp-3">${story.desc}</p>
-                        
-                        <button class="btn-kid-outline w-full py-3 text-xs flex items-center justify-center gap-2 ${isLocked ? 'invisible' : ''}">
-                            <i data-lucide="book-open" class="w-4 h-4"></i> Baca Cerita
-                        </button>
-                    </div>
-                </div>
-            `}).join('');
-            
-            grid.innerHTML = html;
-            lucide.createIcons();
+                    <div class="h-40 bg-gradient-to-br ${styleData.color} relative overflow-hidden flex items-center justify-center border-b-4 border-slate-100"><i data-lucide="${styleData.icon}" class="w-20 h-20 opacity-80 group-hover:scale-125 transition-transform duration-500 drop-shadow-sm"></i><span class="absolute top-4 left-4 bg-white/90 text-slate-700 text-[10px] font-black px-3 py-1 rounded-full shadow-sm uppercase">${story.region}</span></div>
+                    <div class="p-6 flex flex-col flex-grow bg-white relative"><h3 class="text-xl font-black text-slate-800 mb-3 leading-tight line-clamp-2">${story.title}</h3><div class="flex items-center gap-2 mb-4"><span class="text-[10px] font-black px-3 py-1 rounded-full border-2 uppercase ${diffColor}">${story.diff}</span></div><p class="text-sm text-slate-500 font-medium leading-relaxed mb-6 flex-grow line-clamp-3">${story.desc}</p><button class="btn-kid-outline w-full py-3 text-xs flex items-center justify-center gap-2 ${isLocked ? 'invisible' : ''}"><i data-lucide="book-open" class="w-4 h-4"></i> Baca Cerita</button></div>
+                </div>`
+            }).join('');
+            grid.innerHTML = html; lucide.createIcons();
         }
 
-        // Fungsi ketika buku cerita diklik dan halaman membaca terbuka
         function openStory(id) {
-            if (user.name === "Satria Amarta" && user.pin === "") {
-                showToast("Kamu harus membuat akun atau Login dulu di menu Profil!", "error");
-                showScreen('profile'); 
-                return; 
-            }
+            if (user.name === "Satria Amarta" && user.pin === "") { showToast("Kamu harus membuat akun atau Login dulu di menu Profil!", "error"); showScreen('profile'); return; }
+            const story = libraryData.find(s => s.id === id); if(!story) return;
+            currentStoryId = id; const styleData = getStoryIconStyle(id);
 
-            const story = libraryData.find(s => s.id === id);
-            if(!story) return;
-            
-            currentStoryId = id;
-            const styleData = getStoryIconStyle(id);
+            $('reader-title').innerText = story.title; $('reader-region').innerText = "Pulau " + story.region; $('reader-diff').innerText = `Tingkat ${story.diff}`; $('reader-content').innerHTML = `<p>${story.content}</p>`;
+            $('reader-illustration').innerHTML = `<div class="absolute inset-0 bg-gradient-to-br ${styleData.color} flex items-center justify-center"><i data-lucide="${styleData.icon}" class="w-32 h-32 opacity-80"></i></div>`;
 
-            $('reader-title').innerText = story.title;
-            $('reader-region').innerText = "Pulau " + story.region;
-            $('reader-diff').innerText = `Tingkat ${story.diff}`;
-            $('reader-content').innerHTML = `<p>${story.content}</p>`;
-            
-            $('reader-illustration').innerHTML = `
-                <div class="absolute inset-0 bg-gradient-to-br ${styleData.color} flex items-center justify-center">
-                    <i data-lucide="${styleData.icon}" class="w-32 h-32 opacity-80"></i>
-                </div>
-            `;
-
-            // Buat penyimpanan data cerita jika baru pertama kali dibuka
-            if (!user.completedStories[id]) {
-                user.completedStories[id] = { quizScore: 0, writingScore: 0, readTime: 0, quizAttempts: 0, writingAttempts: 0 };
-            }
+            if (!user.completedStories[id]) { user.completedStories[id] = { quizScore: 0, writingScore: 0, readTime: 0, quizAttempts: 0, writingAttempts: 0 }; }
             const cInfo = user.completedStories[id];
-
-            // PENGATURAN TOMBOL MENULIS (Maksimal 2x)
-            // PENGATURAN TOMBOL MENULIS (Maksimal 2x untuk siswa, Bebas untuk Mahaguru)
-            const writeInput = $('writing-input');
-            const btnSubmit = $('btn-submit-writing');
-            const writeResult = $('writing-result');
-            writeResult.innerHTML = '';
-            
             const isGuru = user.name.toLowerCase() === "mahaguru";
-            
-            if (!isGuru && cInfo.writingScore >= 50) {
-                writeInput.style.display = 'none';
-                btnSubmit.style.display = 'none';
-                writeResult.innerHTML = `<div class="p-4 bg-emerald-100 text-emerald-700 font-bold rounded-xl text-center border-2 border-emerald-300">Hebat! Tulisanmu sudah dinilai dengan skor ${cInfo.writingScore}.</div>`;
-            } else if (!isGuru && cInfo.writingAttempts >= 2) {
-                writeInput.style.display = 'none';
-                btnSubmit.style.display = 'none';
-                writeResult.innerHTML = `<div class="p-4 bg-red-100 text-red-700 font-bold rounded-xl text-center border-2 border-red-300">Kesempatan menulis habis. Nilai terakhirmu: ${cInfo.writingScore}.</div>`;
+
+            const writeInput = $('writing-input'); const btnSubmit = $('btn-submit-writing'); const writeResult = $('writing-result'); writeResult.innerHTML = '';
+            if (!isGuru && (cInfo.writingScore || 0) >= 50) {
+                writeInput.style.display = 'none'; btnSubmit.style.display = 'none'; writeResult.innerHTML = `<div class="p-4 bg-emerald-100 text-emerald-700 font-bold rounded-xl text-center border-2 border-emerald-300">Hebat! Tulisanmu sudah dinilai dengan skor ${cInfo.writingScore}.</div>`;
+            } else if (!isGuru && (cInfo.writingAttempts || 0) >= 2) {
+                writeInput.style.display = 'none'; btnSubmit.style.display = 'none'; writeResult.innerHTML = `<div class="p-4 bg-red-100 text-red-700 font-bold rounded-xl text-center border-2 border-red-300">Kesempatan menulis habis. Nilai terakhirmu: ${cInfo.writingScore}.</div>`;
             } else {
-                writeInput.style.display = 'block';
-                writeInput.value = '';
-                btnSubmit.style.display = 'flex';
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = (!isGuru && cInfo.writingAttempts === 1) 
-                    ? '<i data-lucide="send" class="w-5 h-5"></i> Coba Menulis Lagi (Sisa 1x)' 
-                    : '<i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai';
+                writeInput.style.display = 'block'; writeInput.value = ''; btnSubmit.style.display = 'flex'; btnSubmit.disabled = false; btnSubmit.innerHTML = (!isGuru && (cInfo.writingAttempts || 0) === 1) ? '<i data-lucide="send" class="w-5 h-5"></i> Coba Menulis Lagi (Sisa 1x)' : '<i data-lucide="send" class="w-5 h-5"></i> Kirim Tulisan & Cek Nilai';
             }
             
-            // PENGATURAN TOMBOL KUIS (Maksimal 2x untuk siswa, Bebas untuk Mahaguru)
-            const btnQuiz = $('btn-start-quiz');
-            const statusTxt = $('quiz-status-text');
-            
-            if(!isGuru && cInfo.quizScore >= 80) {
-                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-emerald-100 text-emerald-600 border-4 border-emerald-200 cursor-not-allowed flex items-center justify-center";
-                btnQuiz.innerHTML = `<i data-lucide="star" class="w-4 h-4 inline mr-1 fill-current"></i> Nilai Kuis: ${cInfo.quizScore}`;
-                btnQuiz.disabled = true;
-                btnQuiz.onclick = null;
-                statusTxt.innerText = "Hebat! Kuis sudah diselesaikan.";
-                statusTxt.classList.remove('hidden');
-            } else if (!isGuru && cInfo.quizAttempts >= 2) {
-                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-red-100 text-red-600 border-4 border-red-200 cursor-not-allowed flex items-center justify-center";
-                btnQuiz.innerHTML = `<i data-lucide="x" class="w-4 h-4 inline mr-1"></i> Kesempatan Kuis Habis`;
-                btnQuiz.disabled = true;
-                btnQuiz.onclick = null;
-                statusTxt.innerText = `Nilai terakhir: ${cInfo.quizScore}`;
-                statusTxt.classList.remove('hidden');
-            } else if (!isGuru && cInfo.quizAttempts === 1) {
-                btnQuiz.className = "btn-kid-outline w-full bg-amber-50 border-amber-400 text-amber-600 shadow-[0_4px_0_#fbbf24]";
-                btnQuiz.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Coba Kuis Lagi (Sisa 1x)`;
-                btnQuiz.disabled = false;
-                btnQuiz.onclick = () => startQuiz(true);
-                statusTxt.innerText = `Nilai sebelumnya: ${cInfo.quizScore}`;
-                statusTxt.classList.remove('hidden');
+            const btnQuiz = $('btn-start-quiz'); const statusTxt = $('quiz-status-text');
+            if(!isGuru && (cInfo.quizScore || 0) >= 80) {
+                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-emerald-100 text-emerald-600 border-4 border-emerald-200 cursor-not-allowed flex items-center justify-center"; btnQuiz.innerHTML = `<i data-lucide="star" class="w-4 h-4 inline mr-1 fill-current"></i> Nilai Kuis: ${cInfo.quizScore}`; btnQuiz.disabled = true; btnQuiz.onclick = null; statusTxt.innerText = "Hebat! Kuis sudah diselesaikan."; statusTxt.classList.remove('hidden');
+            } else if (!isGuru && (cInfo.quizAttempts || 0) >= 2) {
+                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-red-100 text-red-600 border-4 border-red-200 cursor-not-allowed flex items-center justify-center"; btnQuiz.innerHTML = `<i data-lucide="x" class="w-4 h-4 inline mr-1"></i> Kesempatan Kuis Habis`; btnQuiz.disabled = true; btnQuiz.onclick = null; statusTxt.innerText = `Nilai terakhir: ${cInfo.quizScore}`; statusTxt.classList.remove('hidden');
+            } else if (!isGuru && (cInfo.quizAttempts || 0) === 1) {
+                btnQuiz.className = "btn-kid-outline w-full bg-amber-50 border-amber-400 text-amber-600 shadow-[0_4px_0_#fbbf24]"; btnQuiz.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Coba Kuis Lagi (Sisa 1x)`; btnQuiz.disabled = false; btnQuiz.onclick = () => startQuiz(true); statusTxt.innerText = `Nilai sebelumnya: ${cInfo.quizScore}`; statusTxt.classList.remove('hidden');
             } else {
-                btnQuiz.className = "btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600 text-lg";
-                btnQuiz.innerHTML = `Mulai Kuis`;
-                btnQuiz.disabled = false;
-                btnQuiz.onclick = () => startQuiz(false);
-                statusTxt.classList.add('hidden');
-            }
-    
-            
-            if(cInfo.quizScore >= 80) {
-                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-emerald-100 text-emerald-600 border-4 border-emerald-200 cursor-not-allowed flex items-center justify-center";
-                btnQuiz.innerHTML = `<i data-lucide="star" class="w-4 h-4 inline mr-1 fill-current"></i> Nilai Kuis: ${cInfo.quizScore}`;
-                btnQuiz.disabled = true;
-                btnQuiz.onclick = null;
-                statusTxt.innerText = "Hebat! Kuis sudah diselesaikan.";
-                statusTxt.classList.remove('hidden');
-            } else if (cInfo.quizAttempts >= 2) {
-                btnQuiz.className = "w-full py-4 text-xs font-black uppercase rounded-[999px] bg-red-100 text-red-600 border-4 border-red-200 cursor-not-allowed flex items-center justify-center";
-                btnQuiz.innerHTML = `<i data-lucide="x" class="w-4 h-4 inline mr-1"></i> Kesempatan Kuis Habis`;
-                btnQuiz.disabled = true;
-                btnQuiz.onclick = null;
-                statusTxt.innerText = `Nilai terakhir: ${cInfo.quizScore}`;
-                statusTxt.classList.remove('hidden');
-            } else if (cInfo.quizAttempts === 1) {
-                btnQuiz.className = "btn-kid-outline w-full bg-amber-50 border-amber-400 text-amber-600 shadow-[0_4px_0_#fbbf24]";
-                btnQuiz.innerHTML = `<i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Coba Kuis Lagi (Sisa 1x)`;
-                btnQuiz.disabled = false;
-                btnQuiz.onclick = () => startQuiz(true);
-                statusTxt.innerText = `Nilai sebelumnya: ${cInfo.quizScore}`;
-                statusTxt.classList.remove('hidden');
-            } else {
-                btnQuiz.className = "btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600 text-lg";
-                btnQuiz.innerHTML = `Mulai Kuis`;
-                btnQuiz.disabled = false;
-                btnQuiz.onclick = () => startQuiz(false);
-                statusTxt.classList.add('hidden');
+                btnQuiz.className = "btn-kid w-full bg-indigo-500 border-indigo-700 shadow-[0_4px_0_#4338ca] hover:bg-indigo-600 text-lg"; btnQuiz.innerHTML = `Mulai Kuis`; btnQuiz.disabled = false; btnQuiz.onclick = () => startQuiz(false); statusTxt.classList.add('hidden');
             }
 
-            storyAudio.pause();
-            isStoryPlaying = false;
-            if ($('audio-progress-fill')) $('audio-progress-fill').style.width = '0%';
-            if ($('audio-timer')) $('audio-timer').innerText = "00:00 / 00:00";
-            updatePlayIcon();
+            storyAudio.pause(); isStoryPlaying = false; if ($('audio-progress-fill')) $('audio-progress-fill').style.width = '0%'; if ($('audio-timer')) $('audio-timer').innerText = "00:00 / 00:00"; updatePlayIcon();
             
             const audioContainer = document.querySelector('.bg-sky-500.rounded-full'); 
             if (story.audioUrl) {
                 if (audioContainer) audioContainer.style.display = "flex";
                 storyAudio.src = story.audioUrl;
-                storyAudio.onloadedmetadata = () => {
-                    const totalMin = String(Math.floor(storyAudio.duration / 60)).padStart(2, '0');
-                    const totalSec = String(Math.floor(storyAudio.duration % 60)).padStart(2, '0');
-                    if ($('audio-timer')) $('audio-timer').innerText = `00:00 / ${totalMin}:${totalSec}`;
-                };
+                storyAudio.onloadedmetadata = () => { const totalMin = String(Math.floor(storyAudio.duration / 60)).padStart(2, '0'); const totalSec = String(Math.floor(storyAudio.duration % 60)).padStart(2, '0'); if ($('audio-timer')) $('audio-timer').innerText = `00:00 / ${totalMin}:${totalSec}`; };
             } else {
-                if (audioContainer) audioContainer.style.display = "none";
-                storyAudio.src = "";
+                if (audioContainer) audioContainer.style.display = "none"; storyAudio.src = "";
             }
 
-            user.currentReadingStart = Date.now();
-            showScreen('reader');
-            lucide.createIcons();
+            user.currentReadingStart = Date.now(); showScreen('reader'); lucide.createIcons();
         }
 
-        // Fungsi menutup buku cerita dan kembali ke layar sebelumnya
         function closeReader(targetScreen = 'library') {
-            storyAudio.pause();
-            storyAudio.currentTime = 0;
-            isStoryPlaying = false;
-
-            bgm.volume = 0.05;
-            bgm.play().catch(e => {});
-            isBgmPlaying = true;
-
-            const timeSpentSeconds = Math.round((Date.now() - user.currentReadingStart) / 1000);
-            user.readTimes.push(timeSpentSeconds); 
-            user.completedStories[currentStoryId].readTime += timeSpentSeconds; // Tambah waktu baca untuk cerita ini
-            
-            updateReadStoriesCount(); // Cek kelulusan
-            syncDataToSheet();
-            showScreen(targetScreen);
+            storyAudio.pause(); storyAudio.currentTime = 0; isStoryPlaying = false; bgm.volume = 0.05; bgm.play().catch(e => {}); isBgmPlaying = true;
+            const timeSpentSeconds = Math.round((Date.now() - user.currentReadingStart) / 1000); user.readTimes.push(timeSpentSeconds); user.completedStories[currentStoryId].readTime += timeSpentSeconds;
+            updateReadStoriesCount(); syncDataToSheet(); showScreen(targetScreen);
         }
 
-        // Fungsi ketika tombol "Mulai Kuis" ditekan
         function startQuiz(isRemedi) {
-            const story = libraryData.find(s => s.id === currentStoryId);
-            if(!story) return;
-
+            const story = libraryData.find(s => s.id === currentStoryId); if(!story) return;
             quizState = { active: true, questions: [], currentIndex: 0, score: 0, isRemedial: isRemedi, isTransitioning: false };
-            
-            // Mengacak urutan pertanyaan kuis
-            let shuffled = [...(story.questions || [])].sort(() => 0.5 - Math.random());
-            quizState.questions = shuffled.slice(0, 5);
-
+            let shuffled = [...(story.questions || [])].sort(() => 0.5 - Math.random()); quizState.questions = shuffled.slice(0, 5);
             renderQuizQuestion();
-            
-            const modal = $('screen-quiz');
-            const content = $('quiz-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
+            const modal = $('screen-quiz'); const content = $('quiz-content'); modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); content.classList.add('scale-100'); }, 10);
         }
 
-        // Menampilkan soal kuis satu per satu
         function renderQuizQuestion() {
-            const q = quizState.questions[quizState.currentIndex];
-            if(!q) return;
-
-            $('quiz-progress-text').innerText = `Pertanyaan ${quizState.currentIndex + 1} dari 5`;
-            $('quiz-question').innerText = q.q;
-
+            const q = quizState.questions[quizState.currentIndex]; if(!q) return;
+            $('quiz-progress-text').innerText = `Pertanyaan ${quizState.currentIndex + 1} dari 5`; $('quiz-question').innerText = q.q;
             const box = $('quiz-options');
-            box.innerHTML = q.a.map((txt, i) => `
-                <button id="btn-opt-${i}" onclick="answerQuiz(${i})" class="w-full p-5 bg-white hover:bg-sky-50 hover:border-sky-300 border-4 border-slate-100 rounded-2xl text-left font-black transition-all text-base active:scale-95 shadow-sm text-slate-700">
-                    ${txt}
-                </button>
-            `).join('');
-            
-            box.innerHTML += `<div id="quiz-explanation" class="hidden mt-4 p-5 rounded-2xl text-sm font-bold text-left border-4"></div>`;
-            
-            lucide.createIcons();
+            box.innerHTML = q.a.map((txt, i) => `<button id="btn-opt-${i}" onclick="answerQuiz(${i})" class="w-full p-5 bg-white hover:bg-sky-50 hover:border-sky-300 border-4 border-slate-100 rounded-2xl text-left font-black transition-all text-base active:scale-95 shadow-sm text-slate-700">${txt}</button>`).join('');
+            box.innerHTML += `<div id="quiz-explanation" class="hidden mt-4 p-5 rounded-2xl text-sm font-bold text-left border-4"></div>`; lucide.createIcons();
         }
 
-        // Fungsi mencocokkan jawaban kuis anak-anak dengan kunci jawaban
         function answerQuiz(selectedIndex) {
-            if (quizState.isTransitioning) return;
-            quizState.isTransitioning = true;
-
-            const q = quizState.questions[quizState.currentIndex];
-            if(!q) {
-                quizState.isTransitioning = false; return;
-            }
-
-            const buttons = document.querySelectorAll('#quiz-options button');
-            const expBox = $('quiz-explanation');
-
-            let isCorrect = (selectedIndex === q.c);
-            if(soundClick) soundClick.play();
-
+            if (quizState.isTransitioning) return; quizState.isTransitioning = true;
+            const q = quizState.questions[quizState.currentIndex]; if(!q) { quizState.isTransitioning = false; return; }
+            const buttons = document.querySelectorAll('#quiz-options button'); const expBox = $('quiz-explanation'); let isCorrect = (selectedIndex === q.c); if(soundClick) soundClick.play();
             buttons.forEach((btn, i) => {
-                btn.disabled = true;
-                btn.classList.remove('hover:bg-sky-50', 'hover:border-sky-300', 'active:scale-95');
-                
-                // Jika jawaban Benar, tampilkan warna hijau, jika salah tampilkan merah
-                if (i === q.c) {
-                    btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-700');
-                    btn.classList.add('bg-emerald-50', 'border-emerald-400', 'text-emerald-800');
-                    btn.innerHTML = `<span class="flex items-center gap-3"><div class="w-8 h-8 bg-emerald-400 flex items-center justify-center shrink-0 rounded-full text-white shadow-sm"><i data-lucide="check" class="w-5 h-5"></i></div> ${btn.innerText}</span>`;
-                } else if (i === selectedIndex && !isCorrect) {
-                    btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-700');
-                    btn.classList.add('bg-red-50', 'border-red-400', 'text-red-800');
-                    btn.innerHTML = `<span class="flex items-center gap-3"><div class="w-8 h-8 bg-red-400 flex items-center justify-center shrink-0 rounded-full text-white shadow-sm"><i data-lucide="x" class="w-5 h-5"></i></div> ${btn.innerText}</span>`;
-                } else {
-                    btn.classList.add('opacity-40', 'bg-slate-50');
-                }
+                btn.disabled = true; btn.classList.remove('hover:bg-sky-50', 'hover:border-sky-300', 'active:scale-95');
+                if (i === q.c) { btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-700'); btn.classList.add('bg-emerald-50', 'border-emerald-400', 'text-emerald-800'); btn.innerHTML = `<span class="flex items-center gap-3"><div class="w-8 h-8 bg-emerald-400 flex items-center justify-center shrink-0 rounded-full text-white shadow-sm"><i data-lucide="check" class="w-5 h-5"></i></div> ${btn.innerText}</span>`; } 
+                else if (i === selectedIndex && !isCorrect) { btn.classList.remove('bg-white', 'border-slate-100', 'text-slate-700'); btn.classList.add('bg-red-50', 'border-red-400', 'text-red-800'); btn.innerHTML = `<span class="flex items-center gap-3"><div class="w-8 h-8 bg-red-400 flex items-center justify-center shrink-0 rounded-full text-white shadow-sm"><i data-lucide="x" class="w-5 h-5"></i></div> ${btn.innerText}</span>`; } 
+                else { btn.classList.add('opacity-40', 'bg-slate-50'); }
             });
-
             expBox.classList.remove('hidden', 'opacity-0');
-            if (isCorrect) {
-                if(soundCorrect) soundCorrect.play();
-                quizState.score++;
-                expBox.className = 'mt-5 p-5 rounded-2xl text-sm font-bold text-left bg-emerald-50 border-4 border-emerald-200 text-emerald-800 opacity-100 transition-all';
-                expBox.innerHTML = `<b class="flex items-center gap-2 mb-2 text-lg text-emerald-600"><i data-lucide="smile" class="w-6 h-6"></i> Wah, Benar Sekali!</b> <span class="text-slate-600">${q.exp}</span>`;
-            } else {
-                if(soundWrong) soundWrong.play();
-                expBox.className = 'mt-5 p-5 rounded-2xl text-sm font-bold text-left bg-red-50 border-4 border-red-200 text-red-800 opacity-100 transition-all';
-                expBox.innerHTML = `<b class="flex items-center gap-2 mb-2 text-lg text-red-600"><i data-lucide="frown" class="w-6 h-6"></i> Kurang Tepat, yuk belajar lagi:</b> <span class="text-slate-600">${q.exp}</span>`;
-            }
-            
-            expBox.innerHTML += `
-                <button onclick="nextQuizQuestion()" class="mt-6 w-full py-4 bg-sky-500 rounded-full font-black uppercase tracking-widest text-xs text-white border-b-4 border-sky-700 flex items-center justify-center gap-2 hover:bg-sky-400 transition-colors active:translate-y-1 active:border-b-0">
-                    Lanjut ke Pertanyaan Berikutnya <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </button>
-            `;
-            lucide.createIcons();
+            if (isCorrect) { if(soundCorrect) soundCorrect.play(); quizState.score++; expBox.className = 'mt-5 p-5 rounded-2xl text-sm font-bold text-left bg-emerald-50 border-4 border-emerald-200 text-emerald-800 opacity-100 transition-all'; expBox.innerHTML = `<b class="flex items-center gap-2 mb-2 text-lg text-emerald-600"><i data-lucide="smile" class="w-6 h-6"></i> Wah, Benar Sekali!</b> <span class="text-slate-600">${q.exp}</span>`; } 
+            else { if(soundWrong) soundWrong.play(); expBox.className = 'mt-5 p-5 rounded-2xl text-sm font-bold text-left bg-red-50 border-4 border-red-200 text-red-800 opacity-100 transition-all'; expBox.innerHTML = `<b class="flex items-center gap-2 mb-2 text-lg text-red-600"><i data-lucide="frown" class="w-6 h-6"></i> Kurang Tepat, yuk belajar lagi:</b> <span class="text-slate-600">${q.exp}</span>`; }
+            expBox.innerHTML += `<button onclick="nextQuizQuestion()" class="mt-6 w-full py-4 bg-sky-500 rounded-full font-black uppercase tracking-widest text-xs text-white border-b-4 border-sky-700 flex items-center justify-center gap-2 hover:bg-sky-400 transition-colors active:translate-y-1 active:border-b-0">Lanjut ke Pertanyaan Berikutnya <i data-lucide="arrow-right" class="w-4 h-4"></i></button>`; lucide.createIcons();
         }
 
-        // Berpindah ke pertanyaan kuis selanjutnya
-        function nextQuizQuestion() {
-            quizState.currentIndex++;
-            if(quizState.currentIndex < quizState.questions.length) {
-                renderQuizQuestion();
-                quizState.isTransitioning = false;
-            } else {
-                finishQuiz();
-                quizState.isTransitioning = false;
-            }
-        }
+        function nextQuizQuestion() { quizState.currentIndex++; if(quizState.currentIndex < quizState.questions.length) { renderQuizQuestion(); quizState.isTransitioning = false; } else { finishQuiz(); quizState.isTransitioning = false; } }
 
-        // Menyelesaikan proses kuis dan menyimpan nilai akhir
         function finishQuiz() {
-            const totalQuestions = quizState.questions.length || 5;
-            const percentage = Math.round((quizState.score / totalQuestions) * 100);
-            
-            user.quizScores.push(percentage);
-            user.exp += Math.round(percentage / 2); 
-            
-            let cStory = user.completedStories[currentStoryId];
-            cStory.quizAttempts += 1; // Tambah jumlah percobaan
-            cStory.quizScore = Math.max(cStory.quizScore, percentage); // Simpan nilai tertinggi
-            
-            updateReadStoriesCount(); // Cek kelulusan
-            calculateLevel();
-            syncDataToSheet(); 
-            
-            // ... (biarkan sisa tampilan hasil kuis di bawahnya tetap sama)
-            
-            $('quiz-progress-text').innerText = "HORE! KUIS SELESAI 🎉";
-            
-            let isFail = percentage < 80;
-            
-            $('quiz-question').innerHTML = `
-                <div class="bg-sky-50 p-6 rounded-[2rem] border-4 border-sky-100 text-center mx-auto max-w-lg mt-4">
-                    <h4 class="text-sm font-black text-sky-600 uppercase tracking-widest mb-2">Nilai Kuis Kamu</h4>
-                    <div class="text-6xl font-black ${isFail ? 'text-amber-500' : 'text-sky-500'} mb-6 title-fun">${percentage}</div>
-                    
-                    <div class="mb-6 bg-white rounded-xl border-2 border-sky-100 py-4 px-6 text-left">
-                        <ul class="space-y-4 text-sm font-bold text-slate-600">
-                            <li class="flex justify-between items-center border-b border-slate-50 pb-2">
-                                <span>Jawaban Benar</span> <span class="text-emerald-500 font-black">+${quizState.score}</span>
-                            </li>
-                            <li class="flex justify-between items-center">
-                                <span>Jawaban Salah</span> <span class="text-red-400 font-black">${totalQuestions - quizState.score}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    
-                    <div class="${isFail ? 'text-amber-700 bg-amber-100 border-amber-200' : 'text-emerald-700 bg-emerald-100 border-emerald-200'} text-sm font-bold text-left p-5 rounded-2xl border-2">
-                        <div class="flex items-center gap-2 mb-1"><i data-lucide="${isFail ? 'alert-circle' : 'star'}" class="w-5 h-5"></i> <b>Pesan Sistem:</b></div>
-                        ${isFail ? 'Nilaimu belum mencapai 80. Ayo coba baca lagi pelan-pelan!' : 'Kerja bagus, Ksatria Cilik! Kamu berhasil memahami ceritanya dengan baik.'}
-                    </div>
-                </div>
-            `;
-            
+            const totalQuestions = quizState.questions.length || 5; const percentage = Math.round((quizState.score / totalQuestions) * 100);
+            user.quizScores.push(percentage); user.exp += Math.round(percentage / 2); 
+            let cStory = user.completedStories[currentStoryId]; cStory.quizAttempts = (cStory.quizAttempts || 0) + 1; cStory.quizScore = Math.max(cStory.quizScore || 0, percentage);
+            updateReadStoriesCount(); calculateLevel(); syncDataToSheet(); 
+            $('quiz-progress-text').innerText = "HORE! KUIS SELESAI 🎉"; let isFail = percentage < 80;
+            $('quiz-question').innerHTML = `<div class="bg-sky-50 p-6 rounded-[2rem] border-4 border-sky-100 text-center mx-auto max-w-lg mt-4"><h4 class="text-sm font-black text-sky-600 uppercase tracking-widest mb-2">Nilai Kuis Kamu</h4><div class="text-6xl font-black ${isFail ? 'text-amber-500' : 'text-sky-500'} mb-6 title-fun">${percentage}</div><div class="mb-6 bg-white rounded-xl border-2 border-sky-100 py-4 px-6 text-left"><ul class="space-y-4 text-sm font-bold text-slate-600"><li class="flex justify-between items-center border-b border-slate-50 pb-2"><span>Jawaban Benar</span> <span class="text-emerald-500 font-black">+${quizState.score}</span></li><li class="flex justify-between items-center"><span>Jawaban Salah</span> <span class="text-red-400 font-black">${totalQuestions - quizState.score}</span></li></ul></div><div class="${isFail ? 'text-amber-700 bg-amber-100 border-amber-200' : 'text-emerald-700 bg-emerald-100 border-emerald-200'} text-sm font-bold text-left p-5 rounded-2xl border-2"><div class="flex items-center gap-2 mb-1"><i data-lucide="${isFail ? 'alert-circle' : 'star'}" class="w-5 h-5"></i> <b>Pesan Sistem:</b></div>${isFail ? 'Nilaimu belum mencapai 80. Ayo coba baca lagi pelan-pelan!' : 'Kerja bagus, Ksatria Cilik! Kamu berhasil memahami ceritanya dengan baik.'}</div></div>`;
             let actionHtml = '';
-            if(percentage < 80 && !quizState.isRemedial) {
-                actionHtml = `
-                    <button onclick="closeModal('screen-quiz'); openStory('${currentStoryId}');" class="btn-kid-outline w-full max-w-lg py-4 text-sm border-amber-400 text-amber-500 shadow-[0_4px_0_#fbbf24] hover:bg-amber-50 hover:border-amber-500 hover:text-amber-600 flex justify-center gap-2 mx-auto mt-6">
-                        <i data-lucide="refresh-cw" class="w-5 h-5"></i> Coba Kuis Sekali Lagi
-                    </button>
-                `;
-            } else {
-                actionHtml = `
-                    <button onclick="closeModal('screen-quiz'); openStory('${currentStoryId}');" class="btn-kid w-full max-w-lg py-4 text-sm flex justify-center gap-2 mx-auto bg-emerald-500 border-emerald-600 shadow-[0_4px_0_#059669] hover:bg-emerald-400 mt-6">
-                        <i data-lucide="check" class="w-5 h-5"></i> Selesai & Tutup
-                    </button>
-                `;
-            }
-
-            $('quiz-options').innerHTML = actionHtml;
-            lucide.createIcons();
+            if(percentage < 80 && !quizState.isRemedial) { actionHtml = `<button onclick="closeModal('screen-quiz'); openStory('${currentStoryId}');" class="btn-kid-outline w-full max-w-lg py-4 text-sm border-amber-400 text-amber-500 shadow-[0_4px_0_#fbbf24] hover:bg-amber-50 hover:border-amber-500 hover:text-amber-600 flex justify-center gap-2 mx-auto mt-6"><i data-lucide="refresh-cw" class="w-5 h-5"></i> Coba Kuis Sekali Lagi</button>`; } 
+            else { actionHtml = `<button onclick="closeModal('screen-quiz'); openStory('${currentStoryId}');" class="btn-kid w-full max-w-lg py-4 text-sm flex justify-center gap-2 mx-auto bg-emerald-500 border-emerald-600 shadow-[0_4px_0_#059669] hover:bg-emerald-400 mt-6"><i data-lucide="check" class="w-5 h-5"></i> Selesai & Tutup</button>`; }
+            $('quiz-options').innerHTML = actionHtml; lucide.createIcons();
         }
 
-        // Fungsi pemeriksa otomatis (Koreksi Sintetis Anti-Plagiarisme) saat anak-anak menulis ulang cerita
         async function submitWriting() {
-            const text = $('writing-input').value.trim();
-            // Membersihkan teks dari tanda baca berlebih dan mengubah ke huruf kecil
-            const cleanText = text.toLowerCase().replace(/[.,!?;:()]/g, '');
-            const wordCount = cleanText.split(/\s+/).filter(word => word.length > 0).length;
-            
-            if(wordCount < 10) { 
-                showToast("Tulisanmu masih terlalu pendek. Ayo ceritakan lebih banyak lagi!"); 
-                return; 
-            }
-
-            const btn = $('btn-submit-writing');
-            btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Eyang Semar sedang memeriksa tulisanmu...';
-            btn.disabled = true; 
-            lucide.createIcons();
+            const text = $('writing-input').value.trim(); const cleanText = text.toLowerCase().replace(/[.,!?;:()]/g, ''); const wordCount = cleanText.split(/\s+/).filter(word => word.length > 0).length;
+            if(wordCount < 10) { showToast("Tulisanmu masih terlalu pendek. Ayo ceritakan lebih banyak lagi!"); return; }
+            const btn = $('btn-submit-writing'); btn.innerHTML = '<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> Eyang Semar sedang memeriksa tulisanmu...'; btn.disabled = true; lucide.createIcons();
 
             setTimeout(() => {
-                const story = libraryData.find(s => s.id === currentStoryId);
-                const cleanStoryContent = story.content.toLowerCase().replace(/<br>/g, ' ').replace(/[.,!?;:()]/g, '');
-                
-                let baseScore = 0, keywordScore = 0, lengthScore = 0, feedback = "";
-                let isPlagiarized = false;
-
-                // 1. PENGECEKAN KEYWORD (Kata Penting)
+                const story = libraryData.find(s => s.id === currentStoryId); const cleanStoryContent = story.content.toLowerCase().replace(/<br>/g, ' ').replace(/[.,!?;:()]/g, '');
+                let baseScore = 0, keywordScore = 0, lengthScore = 0, feedback = "", isPlagiarized = false;
                 const ignoreWords = ['yang', 'dan', 'di', 'ke', 'dari', 'pada', 'dalam', 'dengan', 'itu', 'ini', 'sebuah', 'seorang', 'mereka', 'ia', 'karena', 'untuk', 'lalu', 'adalah', 'bahwa', 'kemudian', 'akhirnya', 'suatu', 'hari'];
-                let storyWords = cleanStoryContent.split(/\s+/);
-                // Ambil kata yang panjangnya > 4 dan bukan kata sambung umum
-                let uniqueStoryWords = [...new Set(storyWords)].filter(w => w.length > 4 && !ignoreWords.includes(w));
-                
-                let matchedKeywords = 0;
-                let studentWordsArr = cleanText.split(/\s+/);
-                let studentWordsUnique = [...new Set(studentWordsArr)];
-                
-                studentWordsUnique.forEach(word => { 
-                    if (uniqueStoryWords.includes(word)) matchedKeywords++; 
-                });
+                let storyWords = cleanStoryContent.split(/\s+/); let uniqueStoryWords = [...new Set(storyWords)].filter(w => w.length > 4 && !ignoreWords.includes(w));
+                let matchedKeywords = 0; let studentWordsArr = cleanText.split(/\s+/); let studentWordsUnique = [...new Set(studentWordsArr)];
+                studentWordsUnique.forEach(word => { if (uniqueStoryWords.includes(word)) matchedKeywords++; });
 
-                // 2. PENGECEKAN PLAGIARISME (Copy-Paste Detection via 4-grams)
-                // Kita memecah cerita asli menjadi potongan 4 kata yang berurutan
-                let storyNgrams = [];
-                for (let i = 0; i < storyWords.length - 3; i++) {
-                    storyNgrams.push(storyWords.slice(i, i + 4).join(" "));
-                }
+                let storyNgrams = []; for (let i = 0; i < storyWords.length - 3; i++) { storyNgrams.push(storyWords.slice(i, i + 4).join(" ")); }
+                let studentNgrams = []; for (let i = 0; i < studentWordsArr.length - 3; i++) { studentNgrams.push(studentWordsArr.slice(i, i + 4).join(" ")); }
+                let copiedPhrasesCount = 0; studentNgrams.forEach(ngram => { if (storyNgrams.includes(ngram)) copiedPhrasesCount++; });
+                let copyRatio = studentNgrams.length > 0 ? (copiedPhrasesCount / studentNgrams.length) : 0; if (copyRatio > 0.20) { isPlagiarized = true; }
 
-                // Kita memecah tulisan anak menjadi potongan 4 kata berurutan
-                let studentNgrams = [];
-                for (let i = 0; i < studentWordsArr.length - 3; i++) {
-                    studentNgrams.push(studentWordsArr.slice(i, i + 4).join(" "));
-                }
-
-                // Hitung berapa banyak potongan tulisan anak yang sama persis dengan cerita asli
-                let copiedPhrasesCount = 0;
-                studentNgrams.forEach(ngram => {
-                    if (storyNgrams.includes(ngram)) copiedPhrasesCount++;
-                });
-
-                // Jika lebih dari 20% kalimat yang ditulis anak adalah salinan sama persis
-                let copyRatio = studentNgrams.length > 0 ? (copiedPhrasesCount / studentNgrams.length) : 0;
-                if (copyRatio > 0.20) {
-                    isPlagiarized = true;
-                }
-
-                // 3. PENILAIAN (SKORING)
                 if (matchedKeywords >= 3) {
-                    if (isPlagiarized) {
-                        // HUKUMAN: Jika terindikasi copy-paste, skor ditahan di nilai rendah
-                        baseScore = 20; 
-                        keywordScore = 10;
-                        lengthScore = 0;
-                        feedback = "Wah, Eyang Semar melihat kamu hanya menyalin ulang kalimat dari buku! Yuk, coba ceritakan lagi pakai kata-katamu sendiri ya. Eyang yakin kamu pasti bisa!";
-                    } else {
-                        // REWARD: Anak merangkum dengan bahasanya sendiri
-                        baseScore = 50; 
-                        keywordScore = 25; 
-                        
-                        if (wordCount >= 30 && matchedKeywords >= 6) {
-                            lengthScore = 25; 
-                            feedback = "Sempurna! Ceritamu sangat lengkap, panjang, dan kamu menggunakan kata-katamu sendiri. Eyang Semar sangat bangga padamu!";
-                        } else if (wordCount >= 20) {
-                            lengthScore = 15;
-                            feedback = "Bagus! Kamu sudah menceritakannya dengan bahasamu sendiri. Lain kali coba ceritakan lebih panjang lagi ya.";
-                        } else {
-                            feedback = "Kerja bagus! Tapi ceritanya masih sedikit singkat. Ayo kembangkan lagi imajinasimu!";
-                        }
+                    if (isPlagiarized) { baseScore = 20; keywordScore = 10; lengthScore = 0; feedback = "Wah, Eyang Semar melihat kamu hanya menyalin ulang kalimat dari buku! Yuk, coba ceritakan lagi pakai kata-katamu sendiri ya. Eyang yakin kamu pasti bisa!"; } 
+                    else {
+                        baseScore = 50; keywordScore = 25; 
+                        if (wordCount >= 30 && matchedKeywords >= 6) { lengthScore = 25; feedback = "Sempurna! Ceritamu sangat lengkap, panjang, dan kamu menggunakan kata-katamu sendiri. Eyang Semar sangat bangga padamu!"; } 
+                        else if (wordCount >= 20) { lengthScore = 15; feedback = "Bagus! Kamu sudah menceritakannya dengan bahasamu sendiri. Lain kali coba ceritakan lebih panjang lagi ya."; } 
+                        else { feedback = "Kerja bagus! Tapi ceritanya masih sedikit singkat. Ayo kembangkan lagi imajinasimu!"; }
                     }
-                } else {
-                    feedback = "Hmm... Eyang kurang paham. Sepertinya kamu menceritakan kisah yang berbeda atau terlalu melenceng. Coba baca ulang ceritanya pelan-pelan ya.";
-                }
+                } else { feedback = "Hmm... Eyang kurang paham. Sepertinya kamu menceritakan kisah yang berbeda atau terlalu melenceng. Coba baca ulang ceritanya pelan-pelan ya."; }
 
-                let score = Math.min(baseScore + keywordScore + lengthScore, 100);
-                user.exp += score; 
+                let score = Math.min(baseScore + keywordScore + lengthScore, 100); user.exp += score; 
+                let cStory = user.completedStories[currentStoryId]; cStory.writingAttempts = (cStory.writingAttempts || 0) + 1; cStory.writingScore = Math.max(cStory.writingScore || 0, score);
                 
-                let cStory = user.completedStories[currentStoryId];
-                cStory.writingAttempts += 1; // Tambah jumlah percobaan menulis
-                cStory.writingScore = Math.max(cStory.writingScore, score);
-                
-                updateReadStoriesCount(); // Cek kelulusan
-                calculateLevel();
+                updateReadStoriesCount(); calculateLevel();
+                $('writing-input').style.display = 'none'; btn.style.display = 'none'; let isFail = score < 50; 
 
-                $('writing-input').style.display = 'none';
-                btn.style.display = 'none';
-
-                let isFail = score < 50; // Anggap gagal jika skor di bawah 50 (termasuk kena hukuman copy-paste)
-
-                // Tampilan hasil evaluasi tulisan
                 $('writing-result').innerHTML = `
-                    <div class="mb-6 p-6 bg-white border-4 border-slate-100 rounded-2xl shadow-sm text-left">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Tulisan Hebatmu:</p>
-                        <p class="text-base text-slate-700 font-medium italic leading-relaxed">"${text}"</p>
-                    </div>
-
-                    <div class="bg-sky-50 p-6 rounded-[2rem] border-4 border-sky-100 text-center">
-                        <h4 class="text-sm font-black text-sky-600 uppercase tracking-widest mb-2">Total Nilai dari Eyang</h4>
-                        <div class="text-6xl font-black ${isFail ? 'text-red-500' : 'text-sky-500'} mb-6 title-fun">${score}</div>
-                        
-                        <div class="mb-6 bg-white rounded-xl border-2 border-sky-100 py-4 px-6 text-left">
-                            <ul class="space-y-4 text-sm font-bold text-slate-600">
-                                <li class="flex justify-between items-center border-b border-slate-50 pb-2">
-                                    <span>Cerita Sesuai Topik</span> <span class="${baseScore > 20 ? 'text-sky-500 font-black' : (baseScore > 0 ? 'text-amber-500 font-black' : 'text-slate-300')}">+${baseScore}</span>
-                                </li>
-                                <li class="flex justify-between items-center border-b border-slate-50 pb-2">
-                                    <span>Pemahaman Sendiri</span> <span class="${!isPlagiarized && keywordScore > 0 ? 'text-sky-500 font-black' : (keywordScore > 0 ? 'text-amber-500 font-black' : 'text-slate-300')}">+${keywordScore}</span>
-                                </li>
-                                <li class="flex justify-between items-center">
-                                    <span>Panjang Cerita</span> <span class="${lengthScore>0?'text-sky-500 font-black':'text-slate-300'}">+${lengthScore}</span>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="${isFail ? 'text-red-600 bg-red-100 border-red-200' : 'text-emerald-700 bg-emerald-100 border-emerald-200'} text-sm font-bold text-left p-5 rounded-2xl border-2">
-                            <div class="flex items-center gap-2 mb-1"><i data-lucide="message-circle" class="w-5 h-5"></i> <b>Pesan Eyang Semar:</b></div>
-                            ${feedback}
-                        </div>
-                    </div>
-                `;
+                    <div class="mb-6 p-6 bg-white border-4 border-slate-100 rounded-2xl shadow-sm text-left"><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Tulisan Hebatmu:</p><p class="text-base text-slate-700 font-medium italic leading-relaxed">"${text}"</p></div>
+                    <div class="bg-sky-50 p-6 rounded-[2rem] border-4 border-sky-100 text-center"><h4 class="text-sm font-black text-sky-600 uppercase tracking-widest mb-2">Total Nilai dari Eyang</h4><div class="text-6xl font-black ${isFail ? 'text-red-500' : 'text-sky-500'} mb-6 title-fun">${score}</div><div class="mb-6 bg-white rounded-xl border-2 border-sky-100 py-4 px-6 text-left"><ul class="space-y-4 text-sm font-bold text-slate-600"><li class="flex justify-between items-center border-b border-slate-50 pb-2"><span>Cerita Sesuai Topik</span> <span class="${baseScore > 20 ? 'text-sky-500 font-black' : (baseScore > 0 ? 'text-amber-500 font-black' : 'text-slate-300')}">+${baseScore}</span></li><li class="flex justify-between items-center border-b border-slate-50 pb-2"><span>Pemahaman Sendiri</span> <span class="${!isPlagiarized && keywordScore > 0 ? 'text-sky-500 font-black' : (keywordScore > 0 ? 'text-amber-500 font-black' : 'text-slate-300')}">+${keywordScore}</span></li><li class="flex justify-between items-center"><span>Panjang Cerita</span> <span class="${lengthScore>0?'text-sky-500 font-black':'text-slate-300'}">+${lengthScore}</span></li></ul></div><div class="${isFail ? 'text-red-600 bg-red-100 border-red-200' : 'text-emerald-700 bg-emerald-100 border-emerald-200'} text-sm font-bold text-left p-5 rounded-2xl border-2"><div class="flex items-center gap-2 mb-1"><i data-lucide="message-circle" class="w-5 h-5"></i> <b>Pesan Eyang Semar:</b></div>${feedback}</div></div>`;
                 lucide.createIcons();
-                
-                if(!isFail) { showToast(`Hore! Dapat nilai bagus! +${score} EXP`, "success"); syncDataToSheet(); } 
-                else { showToast(`Yah, nilainya belum maksimal. Coba lagi ya!`, "error"); }
+                if(!isFail) { showToast(`Hore! Dapat nilai bagus! +${score} EXP`, "success"); syncDataToSheet(); } else { showToast(`Yah, nilainya belum maksimal. Coba lagi ya!`, "error"); }
             }, 1500); 
         }
 
-        // ==========================================
-        // FUNGSI PENGATUR LALU LINTAS LAYAR (NAVIGASI)
-        // ==========================================
-        
-        // Membuka menu/layar tertentu dan menyembunyikan yang lainnya
         function showScreen(id) {
             const screens = ['home', 'library', 'reader', 'teacher', 'leaderboard'];
-            screens.forEach(s => {
-                const el = $(`screen-${s}`);
-                if(el && !el.classList.contains('hidden')) { el.classList.add('hidden'); }
-            });
+            screens.forEach(s => { const el = $(`screen-${s}`); if(el && !el.classList.contains('hidden')) { el.classList.add('hidden'); } });
             
             const target = $(`screen-${id}`);
-            if (target) {
-                target.classList.remove('hidden');
-                target.classList.remove('screen-transition');
-                void target.offsetWidth; 
-                target.classList.add('screen-transition');
-            }
+            if (target) { target.classList.remove('hidden'); target.classList.remove('screen-transition'); void target.offsetWidth; target.classList.add('screen-transition'); }
 
-            // Jika pindah dari halaman cerita, matikan suara lagu ceritanya
             if (id !== 'reader' && isStoryPlaying) {
-                storyAudio.pause();
-                storyAudio.currentTime = 0;
-                isStoryPlaying = false;
-                
-                bgm.volume = 0.05;
-                
-                const iconContainer = $('audio-icon');
-                if(iconContainer) {
-                    iconContainer.setAttribute('data-lucide', 'play');
-                    iconContainer.classList.add('ml-1');
-                    lucide.createIcons();
-                }
+                storyAudio.pause(); storyAudio.currentTime = 0; isStoryPlaying = false; bgm.volume = 0.05;
+                const iconContainer = $('audio-icon'); if(iconContainer) { iconContainer.setAttribute('data-lucide', 'play'); iconContainer.classList.add('ml-1'); lucide.createIcons(); }
             }
 
-            if(id === 'library') renderLibrary();
-            if(id === 'teacher') renderTeacherTableFull();
-            if(id === 'leaderboard') updateLeaderboardUI();
-            
-            window.scrollTo(0,0); // Gulung halaman otomatis ke atas
+            if(id === 'library') renderLibrary(); if(id === 'teacher') renderTeacherTableFull(); if(id === 'leaderboard') updateLeaderboardUI();
+            window.scrollTo(0,0); 
         }
 
-        // Menutup jendela notifikasi yang melayang (Modal)
-        function closeModal(id) {
-            const modal = $(id);
-            if(!modal) return;
-            const content = modal.firstElementChild;
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
+        function closeModal(id) { const modal = $(id); if(!modal) return; const content = modal.firstElementChild; content.classList.remove('scale-100'); content.classList.add('scale-95'); modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 300); }
 
-        // Memunculkan kotak peringatan/pesan kecil di atas layar
         function showToast(msg, type='error') {
             const toast = document.createElement('div');
             toast.className = `fixed top-24 left-1/2 -translate-x-1/2 px-6 py-4 rounded-full text-white font-bold shadow-xl z-[999] animate-in slide-in-from-top-4 fade-in duration-300 ${type === 'error' ? 'bg-red-500 border-b-4 border-red-700' : 'bg-emerald-500 border-b-4 border-emerald-700'} flex items-center gap-3 text-sm whitespace-nowrap`;
             toast.innerHTML = (type === 'success' ? '<i data-lucide="check-circle" class="w-5 h-5"></i> ' : '<i data-lucide="alert-circle" class="w-5 h-5"></i> ') + msg;
-            document.body.appendChild(toast);
-            lucide.createIcons();
-            
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'transition-opacity', 'duration-500', '-translate-y-4');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000); // Pesan hilang dalam 3 detik
+            document.body.appendChild(toast); lucide.createIcons();
+            setTimeout(() => { toast.classList.add('opacity-0', 'transition-opacity', 'duration-500', '-translate-y-4'); setTimeout(() => toast.remove(), 500); }, 3000); 
         }
 
-        // Fungsi ketika memilih gambar profil / avatar yang baru
         function selectAvatar(id) {
             user.activeld = id;
-            document.querySelectorAll('#prof-char-list > div').forEach(el => {
-                el.classList.remove('border-sky-500', 'bg-sky-50');
-                el.classList.add('border-slate-200');
-            });
-            const selectedOpt = $(`avatar-opt-${id}`);
-            if (selectedOpt) {
-                selectedOpt.classList.add('border-sky-500', 'bg-sky-50');
-                selectedOpt.classList.remove('border-slate-200');
-            }
-            
+            document.querySelectorAll('#prof-char-list > div').forEach(el => { el.classList.remove('border-sky-500', 'bg-sky-50'); el.classList.add('border-slate-200'); });
+            const selectedOpt = $(`avatar-opt-${id}`); if (selectedOpt) { selectedOpt.classList.add('border-sky-500', 'bg-sky-50'); selectedOpt.classList.remove('border-slate-200'); }
             const mainAvatar = $('prof-avatar-main');
-            if(id === 'arjuna') mainAvatar.innerHTML = '<i data-lucide="shield" class="w-16 h-16 text-sky-500"></i>';
-            else if(id === 'bima') mainAvatar.innerHTML = '<i data-lucide="swords" class="w-16 h-16 text-sky-500"></i>';
-            else mainAvatar.innerHTML = '<i data-lucide="crown" class="w-16 h-16 text-sky-500"></i>';
-            
+            if(id === 'arjuna') mainAvatar.innerHTML = '<i data-lucide="shield" class="w-16 h-16 text-sky-500"></i>'; else if(id === 'bima') mainAvatar.innerHTML = '<i data-lucide="swords" class="w-16 h-16 text-sky-500"></i>'; else mainAvatar.innerHTML = '<i data-lucide="crown" class="w-16 h-16 text-sky-500"></i>';
             lucide.createIcons();
         }
 
-        // Fungsi pertama kali yang dijalankan sesaat setelah seluruh halaman termuat
         window.onload = () => {
             lucide.createIcons();
-            
-            // Mempersiapkan daftar pilihan avatar di buku profil pemain
             const avatarList = $('prof-char-list');
             if(avatarList) {
-                const avatars = [
-                    {id: 'arjuna', icon: 'shield', name: 'Pelindung'},
-                    {id: 'bima', icon: 'swords', name: 'Penyerang'},
-                    {id: 'yudhistira', icon: 'crown', name: 'Pemimpin'}
-                ];
-                avatarList.innerHTML = avatars.map(a => `
-                    <div id="avatar-opt-${a.id}" class="w-20 h-24 border-4 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95 ${user.activeld === a.id ? 'border-sky-500 bg-sky-50' : 'border-slate-200'}" onclick="selectAvatar('${a.id}')">
-                        <i data-lucide="${a.icon}" class="w-8 h-8 ${user.activeld === a.id ? 'text-sky-500' : 'text-slate-400'}"></i>
-                        <span class="text-[9px] font-black text-slate-500 uppercase tracking-wider">${a.name}</span>
-                    </div>
-                `).join('');
+                const avatars = [ {id: 'arjuna', icon: 'shield', name: 'Pelindung'}, {id: 'bima', icon: 'swords', name: 'Penyerang'}, {id: 'yudhistira', icon: 'crown', name: 'Pemimpin'} ];
+                avatarList.innerHTML = avatars.map(a => `<div id="avatar-opt-${a.id}" class="w-20 h-24 border-4 rounded-2xl flex flex-col items-center justify-center gap-2 cursor-pointer transition-all hover:scale-105 active:scale-95 ${user.activeld === a.id ? 'border-sky-500 bg-sky-50' : 'border-slate-200'}" onclick="selectAvatar('${a.id}')"><i data-lucide="${a.icon}" class="w-8 h-8 ${user.activeld === a.id ? 'text-sky-500' : 'text-slate-400'}"></i><span class="text-[9px] font-black text-slate-500 uppercase tracking-wider">${a.name}</span></div>`).join('');
             }
-            
-            selectAvatar(user.activeld);
-            calculateLevel(); 
-            showScreen('home'); // Buka halaman beranda
+            selectAvatar(user.activeld); calculateLevel(); showScreen('home'); 
         };
     </script>
 </body>
